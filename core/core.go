@@ -12,7 +12,7 @@ type Core struct {
 	ankiClient *anki.Client
 }
 
-func NewCore(logger *zap.SugaredLogger, grpcClient *rpc.Client, ankiClient *anki.Client) *Core {
+func New(logger *zap.SugaredLogger, grpcClient *rpc.Client, ankiClient *anki.Client) *Core {
 	return &Core{
 		logger:     logger,
 		grpcClient: grpcClient,
