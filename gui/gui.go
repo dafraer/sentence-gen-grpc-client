@@ -87,11 +87,11 @@ func (gui *GUI) CreateHomePage() fyne.CanvasObject {
 }
 
 func (gui *GUI) CreateGenerateSentencePage() fyne.CanvasObject {
-	title := widget.NewRichTextFromMarkdown("# Generate sentences")
+	title := widget.NewRichTextFromMarkdown(gui.text.GenerateSentenceTitle())
 	word := widget.NewEntry()
 	word.Validator = func(s string) error {
 		if strings.TrimSpace(s) == "" {
-			return fmt.Errorf("word is required")
+			return fmt.Errorf(gui.text.ErrWordRequired())
 		}
 		return nil
 	}
@@ -99,7 +99,10 @@ func (gui *GUI) CreateGenerateSentencePage() fyne.CanvasObject {
 
 	languages := gui.text.GetLanguageList()
 	wordLangSelector := widget.NewSelect(languages, nil)
+	wordLangSelector.SetSelectedIndex(0)
+
 	translationLangSelector := widget.NewSelect(languages, nil)
+	translationLangSelector.SetSelectedIndex(0)
 
 	genders := gui.text.GetGenders()
 	voiceGenderSelector := widget.NewSelect(genders, nil)
@@ -118,10 +121,10 @@ func (gui *GUI) CreateGenerateSentencePage() fyne.CanvasObject {
 		Items: []*widget.FormItem{
 			{Text: gui.text.Word(), Widget: word},
 			{Text: gui.text.TranslationHint(), Widget: translationHint},
-			{Text: gui.text.PickWordLang, Widget: wordLangSelector},
-			{Text: gui.text.PickTranslationLang, Widget: translationLangSelector},
-			{Text: gui.text.IncludeAudio, Widget: includeAudio},
-			{Text: gui.text.VoiceGender, Widget: voiceGenderSelector},
+			{Text: gui.text.PickWordLang(), Widget: wordLangSelector},
+			{Text: gui.text.PickTranslationLang(), Widget: translationLangSelector},
+			{Text: gui.text.IncludeAudio(), Widget: includeAudio},
+			{Text: gui.text.VoiceGender(), Widget: voiceGenderSelector},
 		},
 
 		OnSubmit: func() {
@@ -140,6 +143,7 @@ func (gui *GUI) CreateGenerateSentencePage() fyne.CanvasObject {
 
 			translationHint.SetText("")
 		},
+		SubmitText: gui.text.GenerateButton(),
 	}
 
 	return container.NewVBox(title, form)

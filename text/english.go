@@ -4,6 +4,7 @@ type En struct{}
 
 func (t *En) GetLanguageList() []string {
 	return []string{
+		"-",
 		"English",
 		"Russian",
 		"Turkish",
@@ -57,9 +58,21 @@ func (t *En) PickTranslationLang() string {
 }
 
 func (t *En) IncludeAudio() string {
-	return "Include audio"
+	return "Audio"
 }
 
 func (t *En) VoiceGender() string {
-	return "Voice Gender"
+	return "Voice"
+}
+
+func (t *En) GenerateSentenceTitle() string {
+	return "# Generate sentences"
+}
+
+func (t *En) ErrWordRequired() string {
+	return "Word required"
+}
+
+func (t *En) GenerateButton() string {
+	return "Generate"
 }
