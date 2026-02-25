@@ -15,8 +15,13 @@ func (gui *GUI) createGenerateSentenceForm(params *generateSentenceFormParams) *
 	)
 	form.OnSubmit = func() {
 		gui.onGenerateSentenceSubmit(&onGenerateSentenceSubmitParams{
-			form: form,
-			word: params.word,
+			form:            form,
+			word:            params.word,
+			translationHint: params.translationHint,
+			wordLang:        params.wordLang,
+			translationLang: params.translationLang,
+			audio:           params.audio,
+			voice:           params.voice,
 		})
 		form.Disable()
 	}
@@ -27,12 +32,6 @@ func (gui *GUI) createGenerateSentenceForm(params *generateSentenceFormParams) *
 }
 
 func (gui *GUI) onGenerateSentenceSubmit(params *onGenerateSentenceSubmitParams) {
-	if err := params.word.Validate(); err != nil {
-		return
-	}
-	if err := params.translationHint.Validate(); err != nil {
-		return
-	}
 	go gui.handleGenerateSentences(&GenerateSentencesParams{
 		Word:            params.word.Text,
 		TranslationHint: params.translationHint.Text,
@@ -42,6 +41,5 @@ func (gui *GUI) onGenerateSentenceSubmit(params *onGenerateSentenceSubmitParams)
 		AudioGender:     params.voice.Selected,
 	})
 	params.word.SetText("")
-	params.word.SetValidationError(nil)
 	params.translationHint.SetText("")
 }

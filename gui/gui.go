@@ -123,34 +123,21 @@ func (gui *GUI) CreateGenerateSentencePage() fyne.CanvasObject {
 		audioCheck,
 	})
 
-	wordLangSelect.OnChanged = func(s string) {
-		if err := gui.validateGenerateSentenceForm(wordEntry.Text, translationHint.Text, wordLangSelect.Selected, translationLangSelect.Selected); err != nil {
+	//Every time something changes, validate form and enable/disable it
+	validateForm := func(s string) {
+		if err := gui.validateGenerateSentenceForm(wordEntry.Text,
+			translationHint.Text,
+			wordLangSelect.Selected,
+			translationLangSelect.Selected); err != nil {
 			form.Disable()
 			return
 		}
 		form.Enable()
 	}
-	translationLangSelect.OnChanged = func(s string) {
-		if err := gui.validateGenerateSentenceForm(wordEntry.Text, translationHint.Text, wordLangSelect.Selected, translationLangSelect.Selected); err != nil {
-			form.Disable()
-			return
-		}
-		form.Enable()
-	}
-	wordEntry.OnChanged = func(s string) {
-		if err := gui.validateGenerateSentenceForm(wordEntry.Text, translationHint.Text, wordLangSelect.Selected, translationLangSelect.Selected); err != nil {
-			form.Disable()
-			return
-		}
-		form.Enable()
-	}
-	translationHint.OnChanged = func(s string) {
-		if err := gui.validateGenerateSentenceForm(wordEntry.Text, translationHint.Text, wordLangSelect.Selected, translationLangSelect.Selected); err != nil {
-			form.Disable()
-			return
-		}
-		form.Enable()
-	}
+	wordLangSelect.OnChanged = validateForm
+	translationLangSelect.OnChanged = validateForm
+	wordEntry.OnChanged = validateForm
+	translationHint.OnChanged = validateForm
 
 	return container.NewVBox(title, form)
 }

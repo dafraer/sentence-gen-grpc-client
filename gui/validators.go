@@ -21,7 +21,6 @@ func (gui *GUI) validateWord(w string) error {
 }
 
 func (gui *GUI) validateLanguages(lang1, lang2 string) error {
-	fmt.Println(lang1, lang2)
 	if lang1 == "" || lang2 == "" {
 		return fmt.Errorf("pick languages")
 	}
