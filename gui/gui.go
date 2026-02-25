@@ -1,9 +1,6 @@
 package gui
 
 import (
-	"fmt"
-	"strings"
-
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
@@ -35,7 +32,7 @@ func (gui *GUI) Run() {
 	w := a.NewWindow("Sengen")
 
 	//Items in the list
-	items := gui.text.GetPageList()
+	items := gui.text.GetPageNames()
 
 	//Create pages
 	homePage := gui.CreateHomePage()
@@ -87,63 +84,72 @@ func (gui *GUI) CreateHomePage() fyne.CanvasObject {
 }
 
 func (gui *GUI) CreateGenerateSentencePage() fyne.CanvasObject {
-	title := widget.NewRichTextFromMarkdown(gui.text.GenerateSentenceTitle())
-	word := widget.NewEntry()
-	word.Validator = func(s string) error {
-		if strings.TrimSpace(s) == "" {
-			return fmt.Errorf(gui.text.ErrWordRequired())
-		}
-		return nil
-	}
+	//Create title
+	title := widget.NewRichTextFromMarkdown(gui.text.TextGenerateSentence())
+
+	//Create word entry
+	wordEntry := widget.NewEntry()
+
 	translationHint := widget.NewEntry()
 
-	languages := gui.text.GetLanguageList()
-	wordLangSelector := widget.NewSelect(languages, nil)
-	wordLangSelector.SetSelectedIndex(0)
+	//Create language selectors
+	languages := gui.text.GetLanguages()
+	wordLangSelect := widget.NewSelect(languages, nil)
 
-	translationLangSelector := widget.NewSelect(languages, nil)
-	translationLangSelector.SetSelectedIndex(0)
+	translationLangSelect := widget.NewSelect(languages, nil)
 
+	//Create gender
 	genders := gui.text.GetGenders()
-	voiceGenderSelector := widget.NewSelect(genders, nil)
-	voiceGenderSelector.SetSelected(gui.text.Female())
-	voiceGenderSelector.Disable()
+	voiceGenderSelect := widget.NewSelect(genders, nil)
+	voiceGenderSelect.SetSelected(gui.text.TextFemale())
+	voiceGenderSelect.Disable()
 
-	includeAudio := widget.NewCheck("", func(b bool) {
+	//Create check to include audio
+	audioCheck := widget.NewCheck("", func(b bool) {
 		if b {
-			voiceGenderSelector.Enable()
+			voiceGenderSelect.Enable()
 		} else {
-			voiceGenderSelector.Disable()
+			voiceGenderSelect.Disable()
 		}
 	})
 
-	form := &widget.Form{
-		Items: []*widget.FormItem{
-			{Text: gui.text.Word(), Widget: word},
-			{Text: gui.text.TranslationHint(), Widget: translationHint},
-			{Text: gui.text.PickWordLang(), Widget: wordLangSelector},
-			{Text: gui.text.PickTranslationLang(), Widget: translationLangSelector},
-			{Text: gui.text.IncludeAudio(), Widget: includeAudio},
-			{Text: gui.text.VoiceGender(), Widget: voiceGenderSelector},
-		},
+	//Create the form
+	form := gui.createGenerateSentenceForm(&generateSentenceFormParams{
+		wordEntry,
+		translationHint,
+		wordLangSelect,
+		translationLangSelect,
+		voiceGenderSelect,
+		audioCheck,
+	})
 
-		OnSubmit: func() {
-			if err := word.Validate(); err != nil {
-				return
-			}
-			go gui.handleGenerateSentences(&GenerateSentencesParams{
-				Word:            word.Text,
-				TranslationHint: translationHint.Text,
-				WordLang:        wordLangSelector.Selected,
-				TranslationLang: translationLangSelector.Selected,
-				IncludeAudio:    includeAudio.Checked,
-			})
-			word.SetText("")
-			word.SetValidationError(nil)
-
-			translationHint.SetText("")
-		},
-		SubmitText: gui.text.GenerateButton(),
+	wordLangSelect.OnChanged = func(s string) {
+		if err := gui.validateGenerateSentenceForm(wordEntry.Text, translationHint.Text, wordLangSelect.Selected, translationLangSelect.Selected); err != nil {
+			form.Disable()
+			return
+		}
+		form.Enable()
+	}
+	translationLangSelect.OnChanged = func(s string) {
+		if err := gui.validateGenerateSentenceForm(wordEntry.Text, translationHint.Text, wordLangSelect.Selected, translationLangSelect.Selected); err != nil {
+			form.Disable()
+			return
+		}
+		form.Enable()
+	}
+	wordEntry.OnChanged = func(s string) {
+		if err := gui.validateGenerateSentenceForm(wordEntry.Text, translationHint.Text, wordLangSelect.Selected, translationLangSelect.Selected); err != nil {
+			form.Disable()
+			return
+		}
+		form.Enable()
+	}
+	translationHint.OnChanged = func(s string) {
+		if err := gui.validateGenerateSentenceForm(wordEntry.Text, translationHint.Text, wordLangSelect.Selected, translationLangSelect.Selected); err != nil {
+			form.Disable()
+			return
+		}
+		form.Enable()
 	}
 
 	return container.NewVBox(title, form)

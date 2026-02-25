@@ -2,9 +2,8 @@ package text
 
 type En struct{}
 
-func (t *En) GetLanguageList() []string {
+func (t *En) GetLanguages() []string {
 	return []string{
-		"-",
 		"English",
 		"Russian",
 		"Turkish",
@@ -29,50 +28,58 @@ func (t *En) GetHomePage() string {
 `
 }
 
-func (t *En) GetPageList() []string {
+func (t *En) GetPageNames() []string {
 	return []string{"Home", "Generate sentence", "Translate", "Generate definition", "Settings"}
 }
 
-func (t *En) Male() string {
+func (t *En) TextMale() string {
 	return "Male"
 }
 
-func (t *En) Female() string {
+func (t *En) TextFemale() string {
 	return "Female"
 }
 
-func (t *En) Word() string {
+func (t *En) TextWord() string {
 	return "Word"
 }
 
-func (t *En) TranslationHint() string {
+func (t *En) TextTranslationHint() string {
 	return "Translation Hint"
 }
 
-func (t *En) PickWordLang() string {
+func (t *En) TextPickWordLanguage() string {
 	return "Pick word language"
 }
 
-func (t *En) PickTranslationLang() string {
+func (t *En) TextPickTranslationLanguage() string {
 	return "Pick translation language"
 }
 
-func (t *En) IncludeAudio() string {
+func (t *En) TextAudio() string {
 	return "Audio"
 }
 
-func (t *En) VoiceGender() string {
+func (t *En) TextVoice() string {
 	return "Voice"
 }
 
-func (t *En) GenerateSentenceTitle() string {
+func (t *En) TextGenerateSentence() string {
 	return "# Generate sentences"
 }
 
-func (t *En) ErrWordRequired() string {
+func (t *En) TextErrWordRequired() string {
 	return "Word required"
 }
 
-func (t *En) GenerateButton() string {
+func (t *En) TextGenerate() string {
 	return "Generate"
+}
+
+func (t *En) TextErrHintTooLong() string {
+	return "Hint too long"
+}
+
+func (t *En) TextErrWordTooLong() string {
+	return "Word too long"
 }

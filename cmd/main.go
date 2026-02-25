@@ -26,7 +26,7 @@ func main() {
 
 	grpcClient := rpc.NewClient("localhost:50051", sugar)
 
-	txt := text.NewText("ru")
+	txt := text.NewText("en")
 
 	appCore := core.New(sugar, grpcClient, ankiClient)
 

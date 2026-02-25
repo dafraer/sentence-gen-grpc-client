@@ -1,26 +1,26 @@
 package text
 
 type Text interface {
-	GetLanguageList() []string
+	GetLanguages() []string
 	GetHomePage() string
 	GetGenders() []string
-	GetPageList() []string
-	Male() string
-	Female() string
-	Word() string
-	TranslationHint() string
-	PickWordLang() string
-	PickTranslationLang() string
-	IncludeAudio() string
-	VoiceGender() string
-	GenerateSentenceTitle() string
-	ErrWordRequired() string
-	GenerateButton() string
+	GetPageNames() []string
+	TextMale() string
+	TextFemale() string
+	TextWord() string
+	TextTranslationHint() string
+	TextPickWordLanguage() string
+	TextPickTranslationLanguage() string
+	TextAudio() string
+	TextVoice() string
+	TextGenerateSentence() string
+	TextErrWordRequired() string
+	TextGenerate() string
+	TextErrHintTooLong() string
+	TextErrWordTooLong() string
 }
 
 func NewText(language string) Text {
-	if language == "ru" {
-		return &Ru{}
-	}
+	//TODO: add other languages
 	return &En{}
 }
