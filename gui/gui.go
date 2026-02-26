@@ -11,6 +11,8 @@ import (
 )
 
 type GUI struct {
+	app    fyne.App
+	window fyne.Window
 	logger *zap.SugaredLogger
 	core   *core.Core
 	text   text.Text
@@ -26,19 +28,19 @@ func New(logger *zap.SugaredLogger, core *core.Core, text text.Text) *GUI {
 
 func (gui *GUI) Run() {
 	//Create new instance of the GUI app
-	a := app.New()
+	gui.app = app.New()
 
 	//Create new window
-	w := a.NewWindow("Sengen")
+	gui.window = gui.app.NewWindow("Sengen")
 
 	//Items in the list
 	items := gui.text.GetPageNames()
 
 	//Create pages
-	homePage := gui.CreateHomePage()
-	generateSentencePage := gui.CreateGenerateSentencePage()
-	translatePage := gui.CreateTranslatePage()
-	generateDefinitionPage := gui.CreateGenerateDefinitionPage()
+	homePage := gui.createHomePage()
+	generateSentencePage := gui.createGenerateSentencePage()
+	translatePage := gui.createTranslatePage()
+	generateDefinitionPage := gui.createGenerateDefinitionPage()
 	settingsPage := gui.CreateSettingsPage()
 
 	//Create variable for contents of the page
@@ -72,20 +74,29 @@ func (gui *GUI) Run() {
 	split.Offset = 0.15
 
 	//Set window content and size
-	w.SetContent(split)
-	w.Resize(fyne.NewSize(1000, 1000))
+	gui.window.SetContent(split)
+	gui.window.Resize(fyne.NewSize(1000, 1000))
 
 	//Run the gui
-	w.ShowAndRun()
+	gui.window.ShowAndRun()
 }
 
-func (gui *GUI) CreateHomePage() fyne.CanvasObject {
+func (gui *GUI) createHomePage() fyne.CanvasObject {
 	return widget.NewRichTextFromMarkdown(gui.text.GetHomePage())
 }
 
-func (gui *GUI) CreateGenerateSentencePage() fyne.CanvasObject {
-	//Create title
-	title := widget.NewRichTextFromMarkdown(gui.text.TextGenerateSentence())
+func (gui *GUI) createGenerateSentencePage() fyne.CanvasObject {
+	return gui.createTemplateTranslationPage(gui.text.TextGenerateSentenceTitle(), gui.onGenerateSentenceSubmit)
+}
+
+func (gui *GUI) createTranslatePage() fyne.CanvasObject {
+	return gui.createTemplateTranslationPage(gui.text.TextGenerateTranslationTitle(), gui.onTranslateSubmit)
+}
+
+// createTemplateTranslationPage creates either translate or generate sentence page, depending on params
+func (gui *GUI) createTemplateTranslationPage(title string, onSubmit func(params *onSubmitParams)) fyne.CanvasObject {
+	//Create header
+	header := widget.NewRichTextFromMarkdown(title)
 
 	//Create word entry
 	wordEntry := widget.NewEntry()
@@ -98,34 +109,32 @@ func (gui *GUI) CreateGenerateSentencePage() fyne.CanvasObject {
 
 	translationLangSelect := widget.NewSelect(languages, nil)
 
-	//Create gender
-	genders := gui.text.GetGenders()
-	voiceGenderSelect := widget.NewSelect(genders, nil)
-	voiceGenderSelect.SetSelected(gui.text.TextFemale())
-	voiceGenderSelect.Disable()
+	//Create voice selector
+	voiceSelect := gui.createVoicePicker()
 
 	//Create check to include audio
 	audioCheck := widget.NewCheck("", func(b bool) {
 		if b {
-			voiceGenderSelect.Enable()
+			voiceSelect.Enable()
 		} else {
-			voiceGenderSelect.Disable()
+			voiceSelect.Disable()
 		}
 	})
 
 	//Create the form
-	form := gui.createGenerateSentenceForm(&generateSentenceFormParams{
+	form := gui.createForm(&formParams{
 		wordEntry,
 		translationHint,
 		wordLangSelect,
 		translationLangSelect,
-		voiceGenderSelect,
+		voiceSelect,
 		audioCheck,
+		onSubmit,
 	})
 
 	//Every time something changes, validate form and enable/disable it
 	validateForm := func(s string) {
-		if err := gui.validateGenerateSentenceForm(wordEntry.Text,
+		if err := gui.validateForm(wordEntry.Text,
 			translationHint.Text,
 			wordLangSelect.Selected,
 			translationLangSelect.Selected); err != nil {
@@ -139,17 +148,65 @@ func (gui *GUI) CreateGenerateSentencePage() fyne.CanvasObject {
 	wordEntry.OnChanged = validateForm
 	translationHint.OnChanged = validateForm
 
+	return container.NewVBox(header, form)
+}
+
+func (gui *GUI) createGenerateDefinitionPage() fyne.CanvasObject {
+	//Create title
+	title := widget.NewRichTextFromMarkdown(gui.text.TextGenerateDefinitionTitle())
+
+	//Create word entry
+	wordEntry := widget.NewEntry()
+
+	definitionHint := widget.NewEntry()
+
+	//Create language selectors
+	languages := gui.text.GetLanguages()
+	wordLangSelect := widget.NewSelect(languages, nil)
+
+	//Create voice selector
+	voiceSelect := gui.createVoicePicker()
+
+	//Create check to include audio
+	audioCheck := widget.NewCheck("", func(b bool) {
+		if b {
+			voiceSelect.Enable()
+		} else {
+			voiceSelect.Disable()
+		}
+	})
+
+	//Create the form
+	form := gui.createDefinitionForm(&definitionFormParams{
+		wordEntry,
+		definitionHint,
+		wordLangSelect,
+		voiceSelect,
+		audioCheck,
+	})
+
+	//Every time something changes, validate form and enable/disable it
+	validateForm := func(s string) {
+		if err := gui.validateDefinitionForm(wordEntry.Text,
+			definitionHint.Text,
+			wordLangSelect.Selected); err != nil {
+			form.Disable()
+			return
+		}
+		form.Enable()
+	}
+	wordLangSelect.OnChanged = validateForm
+	wordEntry.OnChanged = validateForm
+	definitionHint.OnChanged = validateForm
+
 	return container.NewVBox(title, form)
 }
 
-func (gui *GUI) CreateTranslatePage() fyne.CanvasObject {
-	return widget.NewLabel("Translate")
-}
-
-func (gui *GUI) CreateGenerateDefinitionPage() fyne.CanvasObject {
-	return widget.NewLabel("Definition")
-}
-
 func (gui *GUI) CreateSettingsPage() fyne.CanvasObject {
-	return widget.NewLabel("Settings")
+	//TODO: finish when will add settings package
+	//Create header
+	header := widget.NewRichTextFromMarkdown(gui.text.TextSettingsTitle())
+	languages := gui.text.GetLanguages()
+	languageSelector := widget.NewSelect(languages, nil)
+	return container.NewVBox(header, languageSelector)
 }

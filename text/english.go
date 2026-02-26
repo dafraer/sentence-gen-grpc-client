@@ -41,7 +41,7 @@ func (t *En) TextFemale() string {
 }
 
 func (t *En) TextWord() string {
-	return "Word"
+	return "word"
 }
 
 func (t *En) TextTranslationHint() string {
@@ -64,12 +64,12 @@ func (t *En) TextVoice() string {
 	return "Voice"
 }
 
-func (t *En) TextGenerateSentence() string {
+func (t *En) TextGenerateSentenceTitle() string {
 	return "# Generate sentences"
 }
 
 func (t *En) TextErrWordRequired() string {
-	return "Word required"
+	return "word required"
 }
 
 func (t *En) TextGenerate() string {
@@ -81,5 +81,20 @@ func (t *En) TextErrHintTooLong() string {
 }
 
 func (t *En) TextErrWordTooLong() string {
-	return "Word too long"
+	return "word too long"
+}
+
+func (t *En) TextGenerateTranslationTitle() string {
+	return "# Generate translation"
+}
+
+func (t *En) TextGenerateDefinitionTitle() string {
+	return "# Generate definition"
+}
+func (t *En) TextDefinitionHint() string {
+	return "Definition hint"
+}
+
+func (t *En) TextSettingsTitle() string {
+	return "# Settings"
 }

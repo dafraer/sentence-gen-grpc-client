@@ -13,11 +13,15 @@ type Text interface {
 	TextPickTranslationLanguage() string
 	TextAudio() string
 	TextVoice() string
-	TextGenerateSentence() string
+	TextGenerateSentenceTitle() string
 	TextErrWordRequired() string
 	TextGenerate() string
 	TextErrHintTooLong() string
 	TextErrWordTooLong() string
+	TextGenerateTranslationTitle() string
+	TextGenerateDefinitionTitle() string
+	TextDefinitionHint() string
+	TextSettingsTitle() string
 }
 
 func NewText(language string) Text {
