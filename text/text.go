@@ -22,6 +22,7 @@ type Text interface {
 	TextGenerateDefinitionTitle() string
 	TextDefinitionHint() string
 	TextSettingsTitle() string
+	TextDeck() string
 }
 
 func NewText(language string) Text {

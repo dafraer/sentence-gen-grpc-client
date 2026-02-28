@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/dafraer/sentence-gen-grpc-client/anki"
+	"github.com/dafraer/sentence-gen-grpc-client/appdata"
 	"github.com/dafraer/sentence-gen-grpc-client/core"
 	"github.com/dafraer/sentence-gen-grpc-client/gui"
 	"github.com/dafraer/sentence-gen-grpc-client/rpc"
@@ -24,11 +25,16 @@ func main() {
 
 	ankiClient := anki.NewClient(sugar, "localhost:8765")
 
-	grpcClient := rpc.NewClient("localhost:50051", sugar)
+	grpcClient, err := rpc.NewClient("localhost:50051", sugar)
+	if err != nil {
+		panic(err)
+	}
+
+	appData := appdata.NewAppData(sugar, ".", ".")
 
 	txt := text.NewText("en")
 
-	appCore := core.New(sugar, grpcClient, ankiClient)
+	appCore := core.New(sugar, grpcClient, ankiClient, appData)
 
 	appGUI := gui.New(sugar, appCore, txt)
 

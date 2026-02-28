@@ -13,6 +13,7 @@ func (gui *GUI) createForm(params *formParams) *widget.Form {
 		&widget.FormItem{Text: gui.text.TextPickTranslationLanguage(), Widget: params.translationLang},
 		&widget.FormItem{Text: gui.text.TextAudio(), Widget: params.audio},
 		&widget.FormItem{Text: gui.text.TextVoice(), Widget: params.voice},
+		&widget.FormItem{Text: gui.text.TextDeck(), Widget: params.deck},
 	)
 	form.OnSubmit = func() {
 		params.onSubmit(&onSubmitParams{
@@ -23,6 +24,7 @@ func (gui *GUI) createForm(params *formParams) *widget.Form {
 			translationLang: params.translationLang,
 			audio:           params.audio,
 			voice:           params.voice,
+			deck:            params.deck,
 		})
 		form.Disable()
 	}
@@ -49,6 +51,7 @@ func (gui *GUI) onGenerateSentenceSubmit(params *onSubmitParams) {
 		translationLang: params.translationLang.Selected,
 		includeAudio:    params.audio.Checked,
 		audioGender:     params.voice.Selected,
+		deck:            params.deck.Text,
 	})
 	params.word.SetText("")
 	params.translationHint.SetText("")
@@ -71,6 +74,7 @@ func (gui *GUI) onTranslateSubmit(params *onSubmitParams) {
 		TranslationLang: params.translationLang.Selected,
 		IncludeAudio:    params.audio.Checked,
 		AudioGender:     params.voice.Selected,
+		Deck:            params.deck.Text,
 	})
 	params.word.SetText("")
 	params.translationHint.SetText("")
@@ -83,6 +87,7 @@ func (gui *GUI) createDefinitionForm(params *definitionFormParams) *widget.Form 
 		&widget.FormItem{Text: gui.text.TextPickWordLanguage(), Widget: params.wordLang},
 		&widget.FormItem{Text: gui.text.TextAudio(), Widget: params.audio},
 		&widget.FormItem{Text: gui.text.TextVoice(), Widget: params.voice},
+		&widget.FormItem{Text: gui.text.TextDeck(), Widget: params.deck},
 	)
 	form.OnSubmit = func() {
 		//Extra check to make sure invalid data is not passed to the handler
@@ -99,6 +104,7 @@ func (gui *GUI) createDefinitionForm(params *definitionFormParams) *widget.Form 
 			WordLang:       params.wordLang.Selected,
 			IncludeAudio:   params.audio.Checked,
 			AudioGender:    params.voice.Selected,
+			Deck:           params.deck.Text,
 		})
 		form.Disable()
 		params.word.SetText("")

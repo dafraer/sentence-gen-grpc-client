@@ -9,6 +9,7 @@ type generateSentencesParams struct {
 	translationLang string
 	includeAudio    bool
 	audioGender     string
+	deck            string
 }
 
 type formParams struct {
@@ -18,6 +19,7 @@ type formParams struct {
 	translationLang *widget.Select
 	voice           *widget.Select
 	audio           *widget.Check
+	deck            *widget.Entry
 	onSubmit        func(params *onSubmitParams)
 }
 
@@ -29,6 +31,7 @@ type onSubmitParams struct {
 	translationLang *widget.Select
 	voice           *widget.Select
 	audio           *widget.Check
+	deck            *widget.Entry
 }
 
 type translateParams struct {
@@ -38,6 +41,7 @@ type translateParams struct {
 	TranslationLang string
 	IncludeAudio    bool
 	AudioGender     string
+	Deck            string
 }
 
 type generateDefinitionParams struct {
@@ -46,6 +50,7 @@ type generateDefinitionParams struct {
 	WordLang       string
 	IncludeAudio   bool
 	AudioGender    string
+	Deck           string
 }
 
 type definitionFormParams struct {
@@ -54,4 +59,5 @@ type definitionFormParams struct {
 	wordLang       *widget.Select
 	voice          *widget.Select
 	audio          *widget.Check
+	deck           *widget.Entry
 }

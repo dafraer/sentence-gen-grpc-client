@@ -1,15 +1,11 @@
 package text
 
+import "github.com/dafraer/sentence-gen-grpc-client/config"
+
 type En struct{}
 
 func (t *En) GetLanguages() []string {
-	return []string{
-		"English",
-		"Russian",
-		"Turkish",
-		"French",
-		"Italian",
-	}
+	return config.GetDisplayNames()
 }
 
 func (t *En) GetGenders() []string {
@@ -41,7 +37,7 @@ func (t *En) TextFemale() string {
 }
 
 func (t *En) TextWord() string {
-	return "word"
+	return "Word"
 }
 
 func (t *En) TextTranslationHint() string {
@@ -97,4 +93,8 @@ func (t *En) TextDefinitionHint() string {
 
 func (t *En) TextSettingsTitle() string {
 	return "# Settings"
+}
+
+func (t *En) TextDeck() string {
+	return "Deck"
 }

@@ -59,24 +59,10 @@ func (c *Client) GenerateSentence(ctx context.Context, req *GenerateSentenceRequ
 		IncludeAudio:        req.IncludeAudio,
 		VoiceGender:         pb.Gender(req.VoiceGender),
 	})
+
 	if err != nil {
-		statusCode := status.Convert(err)
-		switch statusCode.Code() {
-		case codes.InvalidArgument:
-			return nil, ErrInvalidArgument
-		case codes.DeadlineExceeded:
-			return nil, ErrDeadlineExceeded
-		case codes.ResourceExhausted:
-			return nil, ErrResourceExhausted
-		case codes.Internal:
-			return nil, ErrInternalServer
-		}
+		return nil, handleErr(err)
 	}
-	c.logger.Infow("Successfully generated sentence", "result", GenerateSentenceResponse{
-		OriginalSentence:   resp.OriginalSentence,
-		TranslatedSentence: resp.TranslatedSentence,
-		Audio:              resp.Audio.Data,
-	})
 	return &GenerateSentenceResponse{
 		OriginalSentence:   resp.OriginalSentence,
 		TranslatedSentence: resp.TranslatedSentence,
@@ -85,9 +71,54 @@ func (c *Client) GenerateSentence(ctx context.Context, req *GenerateSentenceRequ
 }
 
 func (c *Client) Translate(ctx context.Context, req *TranslateRequest) (*TranslateResponse, error) {
-	return nil, nil
+	resp, err := c.client.Translate(ctx, &pb.TranslateRequest{
+		Word:            req.Word,
+		FromLanguage:    req.FromLanguage,
+		ToLanguage:      req.ToLanguage,
+		TranslationHint: req.TranslationHint,
+		IncludeAudio:    req.IncludeAudio,
+		VoiceGender:     pb.Gender(req.VoiceGender),
+	})
+
+	if err != nil {
+		return nil, handleErr(err)
+	}
+
+	return &TranslateResponse{
+		Translation: resp.Translation,
+		Audio:       resp.Audio.Data,
+	}, nil
 }
 
 func (c *Client) GenerateDefinition(ctx context.Context, req *GenerateDefinitionRequest) (*GenerateDefinitionResponse, error) {
-	return nil, nil
+	resp, err := c.client.GenerateDefinition(ctx, &pb.GenerateDefinitionRequest{
+		Word:           req.Word,
+		Language:       req.Language,
+		DefinitionHint: req.DefinitionHint,
+		IncludeAudio:   req.IncludeAudio,
+		VoiceGender:    pb.Gender(req.VoiceGender),
+	})
+	if err != nil {
+		return nil, handleErr(err)
+	}
+
+	return &GenerateDefinitionResponse{
+		Definition: resp.Definition,
+		Audio:      resp.Audio.Data,
+	}, nil
+}
+
+func handleErr(err error) error {
+	statusCode := status.Convert(err)
+	switch statusCode.Code() {
+	case codes.InvalidArgument:
+		return ErrInvalidArgument
+	case codes.DeadlineExceeded:
+		return ErrDeadlineExceeded
+	case codes.ResourceExhausted:
+		return ErrResourceExhausted
+	case codes.Internal:
+		return ErrInternalServer
+	}
+	return err
 }

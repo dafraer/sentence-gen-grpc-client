@@ -121,15 +121,19 @@ func (gui *GUI) createTemplateTranslationPage(title string, onSubmit func(params
 		}
 	})
 
+	//Create deck entry
+	deckEntry := widget.NewEntry()
+
 	//Create the form
 	form := gui.createForm(&formParams{
-		wordEntry,
-		translationHint,
-		wordLangSelect,
-		translationLangSelect,
-		voiceSelect,
-		audioCheck,
-		onSubmit,
+		word:            wordEntry,
+		translationHint: translationHint,
+		wordLang:        wordLangSelect,
+		translationLang: translationLangSelect,
+		voice:           voiceSelect,
+		audio:           audioCheck,
+		deck:            deckEntry,
+		onSubmit:        onSubmit,
 	})
 
 	//Every time something changes, validate form and enable/disable it
@@ -176,13 +180,17 @@ func (gui *GUI) createGenerateDefinitionPage() fyne.CanvasObject {
 		}
 	})
 
+	//Create deck entry
+	deckEntry := widget.NewEntry()
+
 	//Create the form
 	form := gui.createDefinitionForm(&definitionFormParams{
-		wordEntry,
-		definitionHint,
-		wordLangSelect,
-		voiceSelect,
-		audioCheck,
+		word:           wordEntry,
+		definitionHint: definitionHint,
+		wordLang:       wordLangSelect,
+		voice:          voiceSelect,
+		audio:          audioCheck,
+		deck:           deckEntry,
 	})
 
 	//Every time something changes, validate form and enable/disable it
