@@ -1,7 +1,6 @@
 package gui
 
 func (gui *GUI) handleGenerateSentences(params *generateSentencesParams) {
-
 	gui.logger.Infow("handler called", "data", *params)
 }
 
