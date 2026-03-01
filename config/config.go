@@ -11,6 +11,9 @@ var Languages = []Language{
 	{DisplayName: "Turkish", Code: "tr-TR"},
 	{DisplayName: "French", Code: "fr-FR"},
 	{DisplayName: "Italian", Code: "it-IT"},
+	{DisplayName: "Spanish", Code: "es-ES"},
+	{DisplayName: "German", Code: "de-DE"},
+	{DisplayName: "Ukranian", Code: "uk-UA"},
 }
 
 func GetLanguageCode(displayName string) (string, bool) {

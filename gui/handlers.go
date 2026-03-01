@@ -12,6 +12,10 @@ import (
 
 func (gui *GUI) showError(err error) {
 	fyne.Do(func() {
+		gui.app.SendNotification(&fyne.Notification{
+			Title:   "Error",
+			Content: err.Error(),
+		})
 		dialog.ShowError(err, gui.window)
 	})
 }
