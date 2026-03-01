@@ -1,6 +1,8 @@
 package gui
 
 import (
+	"context"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
@@ -121,8 +123,12 @@ func (gui *GUI) createTemplateTranslationPage(title string, onSubmit func(params
 		}
 	})
 
-	//Create deck entry
-	deckEntry := widget.NewEntry()
+	//Create deck selector populated from Anki
+	decks, err := gui.core.GetDeckNames(context.Background())
+	if err != nil {
+		gui.logger.Warnw("failed to fetch deck names", "err", err)
+	}
+	deckSelect := widget.NewSelect(decks, nil)
 
 	//Create the form
 	form := gui.createForm(&formParams{
@@ -132,7 +138,7 @@ func (gui *GUI) createTemplateTranslationPage(title string, onSubmit func(params
 		translationLang: translationLangSelect,
 		voice:           voiceSelect,
 		audio:           audioCheck,
-		deck:            deckEntry,
+		deck:            deckSelect,
 		onSubmit:        onSubmit,
 	})
 
@@ -141,7 +147,8 @@ func (gui *GUI) createTemplateTranslationPage(title string, onSubmit func(params
 		if err := gui.validateForm(wordEntry.Text,
 			translationHint.Text,
 			wordLangSelect.Selected,
-			translationLangSelect.Selected); err != nil {
+			translationLangSelect.Selected,
+			deckSelect.Selected); err != nil {
 			form.Disable()
 			return
 		}
@@ -151,6 +158,7 @@ func (gui *GUI) createTemplateTranslationPage(title string, onSubmit func(params
 	translationLangSelect.OnChanged = validateForm
 	wordEntry.OnChanged = validateForm
 	translationHint.OnChanged = validateForm
+	deckSelect.OnChanged = validateForm
 
 	return container.NewVBox(header, form)
 }
@@ -180,8 +188,12 @@ func (gui *GUI) createGenerateDefinitionPage() fyne.CanvasObject {
 		}
 	})
 
-	//Create deck entry
-	deckEntry := widget.NewEntry()
+	//Create deck selector populated from Anki
+	decks, err := gui.core.GetDeckNames(context.Background())
+	if err != nil {
+		gui.logger.Warnw("failed to fetch deck names", "err", err)
+	}
+	deckSelect := widget.NewSelect(decks, nil)
 
 	//Create the form
 	form := gui.createDefinitionForm(&definitionFormParams{
@@ -190,14 +202,15 @@ func (gui *GUI) createGenerateDefinitionPage() fyne.CanvasObject {
 		wordLang:       wordLangSelect,
 		voice:          voiceSelect,
 		audio:          audioCheck,
-		deck:           deckEntry,
+		deck:           deckSelect,
 	})
 
 	//Every time something changes, validate form and enable/disable it
 	validateForm := func(s string) {
 		if err := gui.validateDefinitionForm(wordEntry.Text,
 			definitionHint.Text,
-			wordLangSelect.Selected); err != nil {
+			wordLangSelect.Selected,
+			deckSelect.Selected); err != nil {
 			form.Disable()
 			return
 		}
@@ -206,6 +219,7 @@ func (gui *GUI) createGenerateDefinitionPage() fyne.CanvasObject {
 	wordLangSelect.OnChanged = validateForm
 	wordEntry.OnChanged = validateForm
 	definitionHint.OnChanged = validateForm
+	deckSelect.OnChanged = validateForm
 
 	return container.NewVBox(title, form)
 }

@@ -39,7 +39,8 @@ func (gui *GUI) onGenerateSentenceSubmit(params *onSubmitParams) {
 	if err := gui.validateForm(params.word.Text,
 		params.translationHint.Text,
 		params.wordLang.Selected,
-		params.translationLang.Selected); err != nil {
+		params.translationLang.Selected,
+		params.deck.Selected); err != nil {
 		params.form.Disable()
 		dialog.NewError(err, gui.window).Show()
 		return
@@ -51,7 +52,7 @@ func (gui *GUI) onGenerateSentenceSubmit(params *onSubmitParams) {
 		translationLang: params.translationLang.Selected,
 		includeAudio:    params.audio.Checked,
 		audioGender:     params.voice.Selected,
-		deck:            params.deck.Text,
+		deck:            params.deck.Selected,
 	})
 	params.word.SetText("")
 	params.translationHint.SetText("")
@@ -62,7 +63,8 @@ func (gui *GUI) onTranslateSubmit(params *onSubmitParams) {
 	if err := gui.validateForm(params.word.Text,
 		params.translationHint.Text,
 		params.wordLang.Selected,
-		params.translationLang.Selected); err != nil {
+		params.translationLang.Selected,
+		params.deck.Selected); err != nil {
 		params.form.Disable()
 		dialog.NewError(err, gui.window).Show()
 		return
@@ -74,7 +76,7 @@ func (gui *GUI) onTranslateSubmit(params *onSubmitParams) {
 		TranslationLang: params.translationLang.Selected,
 		IncludeAudio:    params.audio.Checked,
 		AudioGender:     params.voice.Selected,
-		Deck:            params.deck.Text,
+		Deck:            params.deck.Selected,
 	})
 	params.word.SetText("")
 	params.translationHint.SetText("")
@@ -93,7 +95,8 @@ func (gui *GUI) createDefinitionForm(params *definitionFormParams) *widget.Form 
 		//Extra check to make sure invalid data is not passed to the handler
 		if err := gui.validateDefinitionForm(params.word.Text,
 			params.definitionHint.Text,
-			params.wordLang.Selected); err != nil {
+			params.wordLang.Selected,
+			params.deck.Selected); err != nil {
 			form.Disable()
 			dialog.NewError(err, gui.window).Show()
 			return
@@ -104,7 +107,7 @@ func (gui *GUI) createDefinitionForm(params *definitionFormParams) *widget.Form 
 			WordLang:       params.wordLang.Selected,
 			IncludeAudio:   params.audio.Checked,
 			AudioGender:    params.voice.Selected,
-			Deck:           params.deck.Text,
+			Deck:           params.deck.Selected,
 		})
 		form.Disable()
 		params.word.SetText("")

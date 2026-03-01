@@ -17,6 +17,8 @@ var (
 	ErrInternalServer    = errors.New("internal server error")
 	ErrResourceExhausted = errors.New("resource exhausted")
 	ErrDeadlineExceeded  = errors.New("deadline exceeded")
+	ErrUnavailable       = errors.New("the server is unavailable")
+	ErrUnknown           = errors.New("unknown error")
 )
 
 type Client struct {
@@ -119,6 +121,9 @@ func handleErr(err error) error {
 		return ErrResourceExhausted
 	case codes.Internal:
 		return ErrInternalServer
+	case codes.Unavailable:
+		return ErrUnavailable
+	default:
+		return ErrUnknown
 	}
-	return err
 }

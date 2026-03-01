@@ -4,20 +4,27 @@ import (
 	"context"
 	"fmt"
 
+	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/dialog"
 	"github.com/dafraer/sentence-gen-grpc-client/config"
 	"github.com/dafraer/sentence-gen-grpc-client/core"
 )
 
+func (gui *GUI) showError(err error) {
+	fyne.Do(func() {
+		dialog.ShowError(err, gui.window)
+	})
+}
+
 func (gui *GUI) handleGenerateSentences(params *generateSentencesParams) {
 	wordLang, ok := config.GetLanguageCode(params.wordLang)
 	if !ok {
-		dialog.ShowError(fmt.Errorf("unknown language: %s", params.wordLang), gui.window)
+		gui.showError(fmt.Errorf("unknown language: %s", params.wordLang))
 		return
 	}
 	translationLang, ok := config.GetLanguageCode(params.translationLang)
 	if !ok {
-		dialog.ShowError(fmt.Errorf("unknown language: %s", params.translationLang), gui.window)
+		gui.showError(fmt.Errorf("unknown language: %s", params.translationLang))
 		return
 	}
 
@@ -31,19 +38,19 @@ func (gui *GUI) handleGenerateSentences(params *generateSentencesParams) {
 		DeckName:            params.deck,
 	})
 	if err != nil {
-		dialog.ShowError(err, gui.window)
+		gui.showError(err)
 	}
 }
 
 func (gui *GUI) handleTranslation(params *translateParams) {
 	wordLang, ok := config.GetLanguageCode(params.WordLang)
 	if !ok {
-		dialog.ShowError(fmt.Errorf("unknown language: %s", params.WordLang), gui.window)
+		gui.showError(fmt.Errorf("unknown language: %s", params.WordLang))
 		return
 	}
 	translationLang, ok := config.GetLanguageCode(params.TranslationLang)
 	if !ok {
-		dialog.ShowError(fmt.Errorf("unknown language: %s", params.TranslationLang), gui.window)
+		gui.showError(fmt.Errorf("unknown language: %s", params.TranslationLang))
 		return
 	}
 
@@ -57,14 +64,14 @@ func (gui *GUI) handleTranslation(params *translateParams) {
 		DeckName:        params.Deck,
 	})
 	if err != nil {
-		dialog.ShowError(err, gui.window)
+		gui.showError(err)
 	}
 }
 
 func (gui *GUI) handleGenerateDefinition(params *generateDefinitionParams) {
 	wordLang, ok := config.GetLanguageCode(params.WordLang)
 	if !ok {
-		dialog.ShowError(fmt.Errorf("unknown language: %s", params.WordLang), gui.window)
+		gui.showError(fmt.Errorf("unknown language: %s", params.WordLang))
 		return
 	}
 
@@ -77,6 +84,6 @@ func (gui *GUI) handleGenerateDefinition(params *generateDefinitionParams) {
 		DeckName:       params.Deck,
 	})
 	if err != nil {
-		dialog.ShowError(err, gui.window)
+		gui.showError(err)
 	}
 }

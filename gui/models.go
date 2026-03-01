@@ -19,7 +19,7 @@ type formParams struct {
 	translationLang *widget.Select
 	voice           *widget.Select
 	audio           *widget.Check
-	deck            *widget.Entry
+	deck            *widget.Select
 	onSubmit        func(params *onSubmitParams)
 }
 
@@ -31,7 +31,7 @@ type onSubmitParams struct {
 	translationLang *widget.Select
 	voice           *widget.Select
 	audio           *widget.Check
-	deck            *widget.Entry
+	deck            *widget.Select
 }
 
 type translateParams struct {
@@ -59,5 +59,5 @@ type definitionFormParams struct {
 	wordLang       *widget.Select
 	voice          *widget.Select
 	audio          *widget.Check
-	deck           *widget.Entry
+	deck           *widget.Select
 }

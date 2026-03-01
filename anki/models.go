@@ -26,7 +26,7 @@ type Audio struct {
 type ankiRequest struct {
 	Action  string      `json:"action"`
 	Version int         `json:"version"`
-	Params  interface{} `json:"params"`
+	Params  interface{} `json:"params,omitempty"`
 }
 
 type addNoteParams struct {
@@ -49,4 +49,9 @@ type audioBody struct {
 type ankiResponse struct {
 	Result interface{} `json:"result"`
 	Error  *string     `json:"error"`
+}
+
+type deckNamesResponse struct {
+	Result []string `json:"result"`
+	Error  *string  `json:"error"`
 }

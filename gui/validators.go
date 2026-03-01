@@ -37,22 +37,28 @@ func (gui *GUI) validateHint(h string) error {
 	return nil
 }
 
-func (gui *GUI) validateForm(word, hint, lang1, lang2 string) error {
+func (gui *GUI) validateForm(word, hint, lang1, lang2, deck string) error {
 	if err := gui.validateWord(word); err != nil {
 		return err
 	}
 	if err := gui.validateLanguages(lang1, lang2); err != nil {
 		return err
 	}
+	if deck == "" {
+		return fmt.Errorf("pick a deck")
+	}
 	return gui.validateHint(hint)
 }
 
-func (gui *GUI) validateDefinitionForm(word, hint, lang string) error {
+func (gui *GUI) validateDefinitionForm(word, hint, lang, deck string) error {
 	if err := gui.validateWord(word); err != nil {
 		return err
 	}
 	if lang == "" {
 		return fmt.Errorf("pick a language")
+	}
+	if deck == "" {
+		return fmt.Errorf("pick a deck")
 	}
 	return gui.validateHint(hint)
 }

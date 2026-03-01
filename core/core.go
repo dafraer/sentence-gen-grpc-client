@@ -29,6 +29,10 @@ func New(logger *zap.SugaredLogger, grpcClient *rpc.Client, ankiClient *anki.Cli
 	}
 }
 
+func (c *Core) GetDeckNames(ctx context.Context) ([]string, error) {
+	return c.ankiClient.GetDeckNames(ctx)
+}
+
 func (c *Core) GenerateSentence(ctx context.Context, req *GenerateSentenceRequest) (*GenerateSentenceResponse, error) {
 	resp, err := c.grpcClient.GenerateSentence(ctx, &rpc.GenerateSentenceRequest{
 		Word:                req.Word,

@@ -23,6 +23,41 @@ func NewClient(logger *zap.SugaredLogger, ankiConnectAddr string) *Client {
 	}
 }
 
+func (c *Client) GetDeckNames(ctx context.Context) ([]string, error) {
+	req := ankiRequest{
+		Action:  "deckNames",
+		Version: 6,
+	}
+
+	body, err := json.Marshal(req)
+	if err != nil {
+		return nil, err
+	}
+
+	httpReq, err := http.NewRequestWithContext(ctx, http.MethodPost, "http://"+c.ankiConnectAddr, bytes.NewReader(body))
+	if err != nil {
+		return nil, err
+	}
+	httpReq.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(httpReq)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var ankiResp deckNamesResponse
+	if err := json.NewDecoder(resp.Body).Decode(&ankiResp); err != nil {
+		return nil, err
+	}
+
+	if ankiResp.Error != nil {
+		return nil, fmt.Errorf("anki: %s", *ankiResp.Error)
+	}
+
+	return ankiResp.Result, nil
+}
+
 func (c *Client) AddCard(ctx context.Context, note Note) error {
 	nb := noteBody{
 		DeckName:  note.DeckName,
