@@ -28,8 +28,6 @@ func main() {
 	}
 	sugar := logger.Sugar()
 
-	sugar.Infow("starting server")
-
 	defer func(logger *zap.SugaredLogger) {
 		if err := logger.Sync(); err != nil {
 			panic(err)

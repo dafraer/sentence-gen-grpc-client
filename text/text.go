@@ -24,6 +24,12 @@ type Text interface {
 	TextSettingsTitle() string
 	TextDeck() string
 	GetLanguageCode(string) (string, bool)
+	TextError() string
+	TextErrUnknownLanguage() string
+	TextSuccess() string
+	TextSentenceGeneratedSuccessfully() string
+	TextTranslationAddedSuccessfully() string
+	TextDefinitionAddedSuccessfully() string
 }
 
 func NewText(language string) Text {

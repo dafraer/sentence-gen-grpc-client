@@ -1,6 +1,7 @@
 package gui
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 )
@@ -12,10 +13,10 @@ const (
 
 func (gui *GUI) validateWord(w string) error {
 	if strings.TrimSpace(w) == "" {
-		return fmt.Errorf(gui.text.TextErrWordRequired())
+		return errors.New(gui.text.TextErrWordRequired())
 	}
 	if len([]rune(w)) > maxWordLen {
-		return fmt.Errorf(gui.text.TextErrWordTooLong())
+		return errors.New(gui.text.TextErrWordTooLong())
 	}
 	return nil
 }
@@ -32,7 +33,7 @@ func (gui *GUI) validateLanguages(lang1, lang2 string) error {
 
 func (gui *GUI) validateHint(h string) error {
 	if len([]rune(h)) > maxHintLen {
-		return fmt.Errorf(gui.text.TextErrHintTooLong())
+		return errors.New(gui.text.TextErrHintTooLong())
 	}
 	return nil
 }

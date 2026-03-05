@@ -188,7 +188,7 @@ func (gui *GUI) createGenerateDefinitionPage() fyne.CanvasObject {
 	//Create deck selector populated from Anki
 	decks, err := gui.core.GetDeckNames(context.Background())
 	if err != nil {
-		gui.logger.Warnw("failed to fetch deck names", "err", err)
+		gui.logger.Errorw("failed to fetch deck names", "err", err)
 	}
 	deckSelect := widget.NewSelect(decks, nil)
 

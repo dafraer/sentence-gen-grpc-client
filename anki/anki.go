@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -13,6 +14,10 @@ import (
 
 const (
 	ankiConnectVersion = 6
+)
+
+var (
+	ErrAnkiError = errors.New("anki connect error")
 )
 
 type Client struct {
@@ -35,28 +40,28 @@ func (c *Client) GetDeckNames(ctx context.Context) ([]string, error) {
 
 	body, err := json.Marshal(req)
 	if err != nil {
-		return nil, err
+		return nil, wrapError(err)
 	}
 
 	httpReq, err := http.NewRequestWithContext(ctx, http.MethodPost, "http://"+c.ankiConnectAddr, bytes.NewReader(body))
 	if err != nil {
-		return nil, err
+		return nil, wrapError(err)
 	}
 	httpReq.Header.Set("Content-Type", "application/json")
 
 	resp, err := http.DefaultClient.Do(httpReq)
 	if err != nil {
-		return nil, err
+		return nil, wrapError(err)
 	}
 	defer resp.Body.Close()
 
 	var ankiResp deckNamesResponse
 	if err := json.NewDecoder(resp.Body).Decode(&ankiResp); err != nil {
-		return nil, err
+		return nil, wrapError(err)
 	}
 
 	if ankiResp.Error != nil {
-		return nil, fmt.Errorf("anki: %s", *ankiResp.Error)
+		return nil, wrapError(fmt.Errorf("anki: %s", *ankiResp.Error))
 	}
 
 	return ankiResp.Result, nil
@@ -88,18 +93,18 @@ func (c *Client) AddCard(ctx context.Context, note Note) error {
 
 	body, err := json.Marshal(req)
 	if err != nil {
-		return err
+		return wrapError(err)
 	}
 
 	httpReq, err := http.NewRequestWithContext(ctx, http.MethodPost, "http://"+c.ankiConnectAddr, bytes.NewReader(body))
 	if err != nil {
-		return err
+		return wrapError(err)
 	}
 	httpReq.Header.Set("Content-Type", "application/json")
 
 	resp, err := http.DefaultClient.Do(httpReq)
 	if err != nil {
-		return err
+		return wrapError(err)
 	}
 	defer func(resp *http.Response) {
 		if err := resp.Body.Close(); err != nil {
@@ -109,12 +114,16 @@ func (c *Client) AddCard(ctx context.Context, note Note) error {
 
 	var ankiResp ankiResponse
 	if err := json.NewDecoder(resp.Body).Decode(&ankiResp); err != nil {
-		return err
+		return wrapError(err)
 	}
 
 	if ankiResp.Error != nil {
-		return fmt.Errorf("anki: %s", *ankiResp.Error)
+		return wrapError(fmt.Errorf("anki: %s", *ankiResp.Error))
 	}
 
 	return nil
+}
+
+func wrapError(err error) error {
+	return errors.Join(err, ErrAnkiError)
 }

@@ -124,3 +124,27 @@ func (t *En) GetLanguageCode(displayName string) (string, bool) {
 	}
 	return "", false
 }
+
+func (t *En) TextError() string {
+	return "Error"
+}
+
+func (t *En) TextErrUnknownLanguage() string {
+	return "Unknown language"
+}
+
+func (t *En) TextSuccess() string {
+	return "Success"
+}
+
+func (t *En) TextSentenceGeneratedSuccessfully() string {
+	return "Sentence with the word '%s' has been generated successfully"
+}
+
+func (t *En) TextTranslationAddedSuccessfully() string {
+	return "Translation with the word '%s' has been added successfully"
+}
+
+func (t *En) TextDefinitionAddedSuccessfully() string {
+	return "Definition of the word '%s' has been added successfully"
+}
