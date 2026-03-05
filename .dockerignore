@@ -1,3 +1,4 @@
 /.idea
 .env
-/.gocache
+.DS_Store
+.gocache
