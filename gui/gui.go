@@ -43,7 +43,6 @@ func (gui *GUI) Run() {
 	generateSentencePage := gui.createGenerateSentencePage()
 	translatePage := gui.createTranslatePage()
 	generateDefinitionPage := gui.createGenerateDefinitionPage()
-	settingsPage := gui.CreateSettingsPage()
 
 	//Create variable for contents of the page
 	content := container.NewStack(homePage) // right side
@@ -54,7 +53,6 @@ func (gui *GUI) Run() {
 		items[1]: generateSentencePage,
 		items[2]: translatePage,
 		items[3]: generateDefinitionPage,
-		items[4]: settingsPage,
 	}
 
 	//Create the actual fyne list
@@ -222,13 +220,4 @@ func (gui *GUI) createGenerateDefinitionPage() fyne.CanvasObject {
 	deckSelect.OnChanged = validateForm
 
 	return container.NewVBox(title, form)
-}
-
-func (gui *GUI) CreateSettingsPage() fyne.CanvasObject {
-	//TODO: finish when will add settings package
-	//Create header
-	header := widget.NewRichTextFromMarkdown(gui.text.TextSettingsTitle())
-	languages := gui.text.GetLanguages()
-	languageSelector := widget.NewSelect(languages, nil)
-	return container.NewVBox(header, languageSelector)
 }

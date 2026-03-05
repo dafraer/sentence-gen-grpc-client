@@ -49,9 +49,9 @@ func (c *Core) GenerateSentence(ctx context.Context, req *GenerateSentenceReques
 	var ankiAudio *anki.Audio
 	if req.IncludeAudio && len(resp.Audio) > 0 {
 		filename := fmt.Sprintf(audioFormat, req.Word, time.Now().Unix())
-		if err := c.appData.SaveAudio(resp.Audio, filename); err != nil {
-			c.logger.Errorw("failed to save audio", "err", err)
-		}
+		//if err := c.appData.SaveAudio(resp.Audio, filename); err != nil {
+		//	c.logger.Errorw("failed to save audio", "err", err)
+		//}
 		ankiAudio = &anki.Audio{Data: resp.Audio, Filename: filename, Fields: []string{"Front"}}
 	}
 
@@ -88,9 +88,6 @@ func (c *Core) Translate(ctx context.Context, req *TranslateRequest) (*Translate
 	var ankiAudio *anki.Audio
 	if req.IncludeAudio && len(resp.Audio) > 0 {
 		filename := fmt.Sprintf(audioFormat, req.Word, time.Now().Unix())
-		if err := c.appData.SaveAudio(resp.Audio, filename); err != nil {
-			c.logger.Errorw("failed to save audio", "err", err)
-		}
 		ankiAudio = &anki.Audio{Data: resp.Audio, Filename: filename, Fields: []string{"Front"}}
 	}
 
@@ -125,9 +122,6 @@ func (c *Core) GenerateDefinition(ctx context.Context, req *GenerateDefinitionRe
 	var ankiAudio *anki.Audio
 	if req.IncludeAudio && len(resp.Audio) > 0 {
 		filename := fmt.Sprintf(audioFormat, req.Word, time.Now().Unix())
-		if err := c.appData.SaveAudio(resp.Audio, filename); err != nil {
-			c.logger.Errorw("failed to save audio", "err", err)
-		}
 		ankiAudio = &anki.Audio{Data: resp.Audio, Filename: filename, Fields: []string{"Front"}}
 	}
 

@@ -1,8 +1,11 @@
 package main
 
 import (
+	"os"
+
 	"github.com/dafraer/sentence-gen-grpc-client/anki"
 	"github.com/dafraer/sentence-gen-grpc-client/appdata"
+	"github.com/dafraer/sentence-gen-grpc-client/config"
 	"github.com/dafraer/sentence-gen-grpc-client/core"
 	"github.com/dafraer/sentence-gen-grpc-client/gui"
 	"github.com/dafraer/sentence-gen-grpc-client/rpc"
@@ -11,11 +14,22 @@ import (
 )
 
 func main() {
-	logger, err := zap.NewDevelopment()
+	debug := len(os.Args) > 1 && os.Args[1] == "debug"
+
+	cfg, err := config.Load(debug)
+	if err != nil {
+		panic(err)
+	}
+
+	opt := zap.NewDevelopmentConfig()
+	opt.OutputPaths = []string{cfg.LogPath}
+	logger, err := opt.Build()
 	if err != nil {
 		panic(err)
 	}
 	sugar := logger.Sugar()
+
+	sugar.Infow("starting server")
 
 	defer func(logger *zap.SugaredLogger) {
 		if err := logger.Sync(); err != nil {
@@ -23,14 +37,14 @@ func main() {
 		}
 	}(sugar)
 
-	ankiClient := anki.NewClient(sugar, "localhost:8765")
+	ankiClient := anki.NewClient(sugar, cfg.AnkiConnectAddr)
 
-	grpcClient, err := rpc.NewClient("localhost:50051", sugar)
+	grpcClient, err := rpc.NewClient(cfg.ServerAddr, sugar)
 	if err != nil {
 		panic(err)
 	}
 
-	appData := appdata.NewAppData(sugar, ".", ".")
+	appData := appdata.NewAppData(sugar, cfg.StatePath)
 
 	txt := text.NewText("en")
 

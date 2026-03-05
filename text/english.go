@@ -42,7 +42,7 @@ func (t *En) GetHomePage() string {
 }
 
 func (t *En) GetPageNames() []string {
-	return []string{"Home", "Generate sentence", "Translate", "Generate definition", "Settings"}
+	return []string{"Home", "Generate sentence", "Translate", "Generate definition"}
 }
 
 func (t *En) TextMale() string {
