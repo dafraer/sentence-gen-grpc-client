@@ -43,7 +43,6 @@ func (gui *GUI) Run() {
 	generateSentencePage := gui.createGenerateSentencePage()
 	translatePage := gui.createTranslatePage()
 	generateDefinitionPage := gui.createGenerateDefinitionPage()
-
 	//Create variable for contents of the page
 	content := container.NewStack(homePage) // right side
 

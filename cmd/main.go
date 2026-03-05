@@ -4,7 +4,6 @@ import (
 	"os"
 
 	"github.com/dafraer/sentence-gen-grpc-client/anki"
-	"github.com/dafraer/sentence-gen-grpc-client/appdata"
 	"github.com/dafraer/sentence-gen-grpc-client/config"
 	"github.com/dafraer/sentence-gen-grpc-client/core"
 	"github.com/dafraer/sentence-gen-grpc-client/gui"
@@ -44,11 +43,9 @@ func main() {
 		panic(err)
 	}
 
-	appData := appdata.NewAppData(sugar, cfg.StatePath)
-
 	txt := text.NewText("en")
 
-	appCore := core.New(sugar, grpcClient, ankiClient, appData)
+	appCore := core.New(sugar, grpcClient, ankiClient)
 
 	appGUI := gui.New(sugar, appCore, txt)
 

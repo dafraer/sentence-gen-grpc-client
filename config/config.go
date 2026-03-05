@@ -10,7 +10,6 @@ const (
 )
 
 type Config struct {
-	StatePath       string
 	LogPath         string
 	ServerAddr      string
 	AnkiConnectAddr string
@@ -18,23 +17,15 @@ type Config struct {
 
 // Load loads config and panics if it encounters an error
 func Load(debug bool) (*Config, error) {
-	pl := platform.New()
-	statePath, err := pl.GetStateFilePath()
-	if err != nil {
-		return nil, err
-	}
-
-	logPath, err := pl.GetLogFilePath()
+	logPath, err := platform.GetLogFilePath()
 	if err != nil {
 		return nil, err
 	}
 
 	if debug {
-		statePath = "./state.json"
 		logPath = "stderr"
 	}
 	return &Config{
-		StatePath:       statePath,
 		LogPath:         logPath,
 		AnkiConnectAddr: ankiConnectAddr,
 		ServerAddr:      serverAddr,
