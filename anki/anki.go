@@ -11,6 +11,10 @@ import (
 	"go.uber.org/zap"
 )
 
+const (
+	ankiConnectVersion = 6
+)
+
 type Client struct {
 	logger          *zap.SugaredLogger
 	ankiConnectAddr string
@@ -26,7 +30,7 @@ func NewClient(logger *zap.SugaredLogger, ankiConnectAddr string) *Client {
 func (c *Client) GetDeckNames(ctx context.Context) ([]string, error) {
 	req := ankiRequest{
 		Action:  "deckNames",
-		Version: 6,
+		Version: ankiConnectVersion,
 	}
 
 	body, err := json.Marshal(req)
@@ -78,7 +82,7 @@ func (c *Client) AddCard(ctx context.Context, note Note) error {
 
 	req := ankiRequest{
 		Action:  "addNote",
-		Version: 6,
+		Version: ankiConnectVersion,
 		Params:  addNoteParams{Note: nb},
 	}
 

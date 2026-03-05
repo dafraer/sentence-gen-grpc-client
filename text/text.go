@@ -23,6 +23,7 @@ type Text interface {
 	TextDefinitionHint() string
 	TextSettingsTitle() string
 	TextDeck() string
+	GetLanguageCode(string) (string, bool)
 }
 
 func NewText(language string) Text {

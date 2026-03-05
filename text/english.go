@@ -1,11 +1,28 @@
 package text
 
-import "github.com/dafraer/sentence-gen-grpc-client/config"
-
 type En struct{}
+type Language struct {
+	DisplayName string
+	Code        string
+}
+
+var languages = []Language{
+	{DisplayName: "English", Code: "en-US"},
+	{DisplayName: "Russian", Code: "ru-RU"},
+	{DisplayName: "Turkish", Code: "tr-TR"},
+	{DisplayName: "French", Code: "fr-FR"},
+	{DisplayName: "Italian", Code: "it-IT"},
+	{DisplayName: "Spanish", Code: "es-ES"},
+	{DisplayName: "German", Code: "de-DE"},
+	{DisplayName: "Ukrainian", Code: "uk-UA"},
+}
 
 func (t *En) GetLanguages() []string {
-	return config.GetDisplayNames()
+	names := make([]string, len(languages))
+	for i, l := range languages {
+		names[i] = l.DisplayName
+	}
+	return names
 }
 
 func (t *En) GetGenders() []string {
@@ -97,4 +114,13 @@ func (t *En) TextSettingsTitle() string {
 
 func (t *En) TextDeck() string {
 	return "Deck"
+}
+
+func (t *En) GetLanguageCode(displayName string) (string, bool) {
+	for _, l := range languages {
+		if l.DisplayName == displayName {
+			return l.Code, true
+		}
+	}
+	return "", false
 }

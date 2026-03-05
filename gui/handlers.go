@@ -5,8 +5,6 @@ import (
 	"fmt"
 
 	"fyne.io/fyne/v2"
-	"fyne.io/fyne/v2/dialog"
-	"github.com/dafraer/sentence-gen-grpc-client/config"
 	"github.com/dafraer/sentence-gen-grpc-client/core"
 )
 
@@ -16,17 +14,16 @@ func (gui *GUI) showError(err error) {
 			Title:   "Error",
 			Content: err.Error(),
 		})
-		dialog.ShowError(err, gui.window)
 	})
 }
 
 func (gui *GUI) handleGenerateSentences(params *generateSentencesParams) {
-	wordLang, ok := config.GetLanguageCode(params.wordLang)
+	wordLang, ok := gui.text.GetLanguageCode(params.wordLang)
 	if !ok {
 		gui.showError(fmt.Errorf("unknown language: %s", params.wordLang))
 		return
 	}
-	translationLang, ok := config.GetLanguageCode(params.translationLang)
+	translationLang, ok := gui.text.GetLanguageCode(params.translationLang)
 	if !ok {
 		gui.showError(fmt.Errorf("unknown language: %s", params.translationLang))
 		return
@@ -47,12 +44,12 @@ func (gui *GUI) handleGenerateSentences(params *generateSentencesParams) {
 }
 
 func (gui *GUI) handleTranslation(params *translateParams) {
-	wordLang, ok := config.GetLanguageCode(params.WordLang)
+	wordLang, ok := gui.text.GetLanguageCode(params.WordLang)
 	if !ok {
 		gui.showError(fmt.Errorf("unknown language: %s", params.WordLang))
 		return
 	}
-	translationLang, ok := config.GetLanguageCode(params.TranslationLang)
+	translationLang, ok := gui.text.GetLanguageCode(params.TranslationLang)
 	if !ok {
 		gui.showError(fmt.Errorf("unknown language: %s", params.TranslationLang))
 		return
@@ -73,7 +70,7 @@ func (gui *GUI) handleTranslation(params *translateParams) {
 }
 
 func (gui *GUI) handleGenerateDefinition(params *generateDefinitionParams) {
-	wordLang, ok := config.GetLanguageCode(params.WordLang)
+	wordLang, ok := gui.text.GetLanguageCode(params.WordLang)
 	if !ok {
 		gui.showError(fmt.Errorf("unknown language: %s", params.WordLang))
 		return
