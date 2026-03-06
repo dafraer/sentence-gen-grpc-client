@@ -22,12 +22,17 @@ func GetLogFilePath() (string, error) {
 	case "windows":
 		return getWindowsLogFilePath()
 	}
-	panic("platform does not support os " + runtime.GOOS)
+	return "", fmt.Errorf("platform does not support os " + runtime.GOOS)
 }
+
+// getWindowsLogFilePath returns log file path for windows
+// On Windows logs are stored in %LOCALAPPDATA%\<AppName>
+// It also checks that the directory exists and creates it if it doesn't
 func getWindowsLogFilePath() (string, error) {
 	//Logs go under %LOCALAPPDATA%\<AppName>
 	local := os.Getenv("LOCALAPPDATA")
 
+	//Check that env variable is set
 	if local == "" {
 		return "", fmt.Errorf("LOCALAPPDATA environment variable not set")
 	}
@@ -40,6 +45,9 @@ func getWindowsLogFilePath() (string, error) {
 	return filepath.Join(base, logFileName), nil
 }
 
+// getMacLogFilePath returns log file path for macOS
+// On macOS logs are stored in ~/Library/Logs/<AppName>
+// It also checks that the directory exists and creates it if it doesn't
 func getMacLogFilePath() (string, error) {
 	home, err := os.UserHomeDir()
 	if err != nil {
@@ -55,6 +63,9 @@ func getMacLogFilePath() (string, error) {
 	return filepath.Join(base, logFileName), nil
 }
 
+// getLinuxLogFilePath returns log file path for linux
+// On Linux logs are usually stored in $XDG_STATE_HOME (default ~/.local/state)
+// It also checks that the directory exists and creates it if it doesn't
 func getLinuxLogFilePath() (string, error) {
 	// XDG Base Directory Specification:
 	// Logs live in $XDG_STATE_HOME (default ~/.local/state)
