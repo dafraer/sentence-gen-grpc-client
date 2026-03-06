@@ -21,13 +21,12 @@
   <ol>
     <li><a href="#about-the-project">About The Project</a></li>
     <li>
-      <a href="#getting-started">Getting Started</a>
+      <a href="#tutorial">Tutorial</a>
       <ul>
         <li><a href="#installation">Installation</a></li>
         <li><a href="#setting-up-anki-and-ankiconnect">Setting Up Anki and AnkiConnect</a></li>
       </ul>
     </li>
-    <li><a href="#tutorial">Tutorial</a></li>
     <li><a href="#features">Features</a></li>
     <li><a href="#contact">Contact</a></li>
   </ol>
@@ -44,20 +43,20 @@ The UI is available in English, Russian, Turkish, and Spanish.
 
 
 
-<!-- GETTING STARTED -->
-## Getting Started
+<!-- TUTORIAL -->
+## Tutorial 
 
 ### Installation
 
 Download the latest build for your platform:
 
-| Platform | Download                                                                                                    |
-|----------|-------------------------------------------------------------------------------------------------------------|
-| macOS    | [Sengen.app](https://github.com/dafraer/sentence-gen-grpc-client/builds/darwin/Sengen.app)                  |
-| Windows  | [Sengen.exe](https://github.com/dafraer/sentence-gen-grpc-client/releases/latest/download/Sengen.exe)       |
-| Linux    | [Sengen.tar.gz](https://github.com/dafraer/sentence-gen-grpc-client/releases/latest/download/Sengen.tar.gz) |
+| Platform | Download                                                                                                 |
+|----------|----------------------------------------------------------------------------------------------------------|
+| macOS    | [Sengen.dmg](https://github.com/dafraer/sentence-gen-grpc-client/blob/main/builds/darwin/Sengen.dmg)     |
+| Windows  | [Sengen.exe](https://github.com/dafraer/sentence-gen-grpc-client/blob/main/builds/windows/Sengen.exe)    |
+| Linux    | [Sengen.tar.gz](https://github.com/dafraer/sentence-gen-grpc-client/blob/main/builds/linux/engen.tar.gz) |
 
-**macOS:** After downloading, drag `Sengen.app` to your Applications folder. On first launch you may need to right-click → Open to bypass Gatekeeper.
+**macOS:** After downloading, open `Sengen.dmg` and drag `Sengen.app` to your Applications folder. Eject the dmg afterward. On first launch you may need to right-click -> Open to bypass Gatekeeper.
 
 **Windows:** Run `Sengen.exe` directly — no installation required.
 
@@ -92,8 +91,8 @@ AnkiConnect runs a local HTTP server on port **8765** whenever Anki is open. You
 
 
 
-<!-- TUTORIAL -->
-## Tutorial
+<!-- FEATURES -->
+## Features
 
 #### 1. Open Anki and Sengen
 
@@ -128,21 +127,6 @@ Click the submit button. Sengen will call the AI backend, generate the card cont
 #### 5. Review in Anki
 
 Switch to Anki and start a review session for your deck — your new card will be there, ready to study.
-
-
-
-<!-- FEATURES -->
-## Features
-
-- **Generate Sentence Cards** — AI-generated example sentences with translations added directly to Anki.
-- **Translate Cards** — Direct word-to-word translation cards.
-- **Definition Cards** — Monolingual definition cards for immersive learning.
-- **TTS Audio** — Attach text-to-speech audio (male or female voice) to any card.
-- **Anki Deck Selection** — Fetches your existing Anki decks automatically; pick one from a dropdown.
-- **Multi-language UI** — Interface available in English, Russian, Turkish, and Spanish.
-- **Cross-platform** — Runs on macOS, Windows, and Linux.
-
-
 
 <!-- CONTACT -->
 ## Contact
