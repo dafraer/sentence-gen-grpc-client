@@ -51,10 +51,10 @@ The UI is available in English, Russian, Turkish, and Spanish.
 
 Download the latest build for your platform:
 
-| Platform | Download |
-|----------|----------|
-| macOS    | [Sengen.app](https://github.com/dafraer/sentence-gen-grpc-client/releases/latest/download/Sengen.app) |
-| Windows  | [Sengen.exe](https://github.com/dafraer/sentence-gen-grpc-client/releases/latest/download/Sengen.exe) |
+| Platform | Download                                                                                                    |
+|----------|-------------------------------------------------------------------------------------------------------------|
+| macOS    | [Sengen.app](https://github.com/dafraer/sentence-gen-grpc-client/builds/darwin/Sengen.app)                  |
+| Windows  | [Sengen.exe](https://github.com/dafraer/sentence-gen-grpc-client/releases/latest/download/Sengen.exe)       |
 | Linux    | [Sengen.tar.gz](https://github.com/dafraer/sentence-gen-grpc-client/releases/latest/download/Sengen.tar.gz) |
 
 **macOS:** After downloading, drag `Sengen.app` to your Applications folder. On first launch you may need to right-click → Open to bypass Gatekeeper.
