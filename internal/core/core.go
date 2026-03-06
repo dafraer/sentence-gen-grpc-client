@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/dafraer/sentence-gen-grpc-client/anki"
-	"github.com/dafraer/sentence-gen-grpc-client/rpc"
+	anki2 "github.com/dafraer/sentence-gen-grpc-client/internal/anki"
+	rpc2 "github.com/dafraer/sentence-gen-grpc-client/internal/rpc"
 	"go.uber.org/zap"
 )
 
@@ -14,12 +14,12 @@ const audioFormat = "%s_%d.wav" //Format for .wav audio
 
 type Core struct {
 	logger     *zap.SugaredLogger
-	grpcClient *rpc.Client
-	ankiClient *anki.Client
+	grpcClient *rpc2.Client
+	ankiClient *anki2.Client
 }
 
 // New creates new app core
-func New(logger *zap.SugaredLogger, grpcClient *rpc.Client, ankiClient *anki.Client) *Core {
+func New(logger *zap.SugaredLogger, grpcClient *rpc2.Client, ankiClient *anki2.Client) *Core {
 	return &Core{
 		logger:     logger,
 		grpcClient: grpcClient,
@@ -37,7 +37,7 @@ func (c *Core) GenerateSentence(ctx context.Context, req *GenerateSentenceReques
 	c.logger.Infow("generating sentence", "word", req.Word, "wordLang", req.WordLanguage, "translationLang", req.TranslationLanguage, "deck", req.DeckName, "includeAudio", req.IncludeAudio)
 
 	//Generate sentences
-	resp, err := c.grpcClient.GenerateSentence(ctx, &rpc.GenerateSentenceRequest{
+	resp, err := c.grpcClient.GenerateSentence(ctx, &rpc2.GenerateSentenceRequest{
 		Word:                req.Word,
 		WordLanguage:        req.WordLanguage,
 		TranslationLanguage: req.TranslationLanguage,
@@ -51,17 +51,17 @@ func (c *Core) GenerateSentence(ctx context.Context, req *GenerateSentenceReques
 	}
 
 	//Build audio file for anki
-	var ankiAudio *anki.Audio
+	var ankiAudio *anki2.Audio
 	if req.IncludeAudio && len(resp.Audio) > 0 {
 		filename := fmt.Sprintf(audioFormat, req.Word, time.Now().Unix())
 		c.logger.Debugw("audio received for sentence", "word", req.Word, "bytes", len(resp.Audio), "filename", filename)
-		ankiAudio = &anki.Audio{Data: resp.Audio, Filename: filename, Fields: []string{"Front"}}
+		ankiAudio = &anki2.Audio{Data: resp.Audio, Filename: filename, Fields: []string{"Front"}}
 	}
 
 	//Add anki card
-	if err := c.ankiClient.AddCard(ctx, anki.Note{
+	if err := c.ankiClient.AddCard(ctx, anki2.Note{
 		DeckName: req.DeckName,
-		CardType: anki.BasicAndReverse,
+		CardType: anki2.BasicAndReverse,
 		Front:    resp.OriginalSentence,
 		Back:     resp.TranslatedSentence,
 		Audio:    ankiAudio,
@@ -78,7 +78,7 @@ func (c *Core) GenerateSentence(ctx context.Context, req *GenerateSentenceReques
 func (c *Core) Translate(ctx context.Context, req *TranslateRequest) error {
 	c.logger.Infow("translating word", "word", req.Word, "wordLang", req.WordLanguage, "translationLang", req.TranslationLang, "deck", req.DeckName, "includeAudio", req.IncludeAudio)
 	//Translate the word
-	resp, err := c.grpcClient.Translate(ctx, &rpc.TranslateRequest{
+	resp, err := c.grpcClient.Translate(ctx, &rpc2.TranslateRequest{
 		Word:            req.Word,
 		FromLanguage:    req.WordLanguage,
 		ToLanguage:      req.TranslationLang,
@@ -92,17 +92,17 @@ func (c *Core) Translate(ctx context.Context, req *TranslateRequest) error {
 	}
 
 	//Build audio file for anki
-	var ankiAudio *anki.Audio
+	var ankiAudio *anki2.Audio
 	if req.IncludeAudio && len(resp.Audio) > 0 {
 		filename := fmt.Sprintf(audioFormat, req.Word, time.Now().Unix())
 		c.logger.Debugw("audio received for translation", "word", req.Word, "bytes", len(resp.Audio), "filename", filename)
-		ankiAudio = &anki.Audio{Data: resp.Audio, Filename: filename, Fields: []string{"Front"}}
+		ankiAudio = &anki2.Audio{Data: resp.Audio, Filename: filename, Fields: []string{"Front"}}
 	}
 
 	//Add card to anki
-	if err := c.ankiClient.AddCard(ctx, anki.Note{
+	if err := c.ankiClient.AddCard(ctx, anki2.Note{
 		DeckName: req.DeckName,
-		CardType: anki.BasicAndReverse,
+		CardType: anki2.BasicAndReverse,
 		Front:    req.Word,
 		Back:     resp.Translation,
 		Audio:    ankiAudio,
@@ -119,7 +119,7 @@ func (c *Core) Translate(ctx context.Context, req *TranslateRequest) error {
 func (c *Core) GenerateDefinition(ctx context.Context, req *GenerateDefinitionRequest) error {
 	c.logger.Infow("generating definition", "word", req.Word, "lang", req.Language, "deck", req.DeckName, "includeAudio", req.IncludeAudio)
 	//Generate definition
-	resp, err := c.grpcClient.GenerateDefinition(ctx, &rpc.GenerateDefinitionRequest{
+	resp, err := c.grpcClient.GenerateDefinition(ctx, &rpc2.GenerateDefinitionRequest{
 		Word:           req.Word,
 		Language:       req.Language,
 		DefinitionHint: req.DefinitionHint,
@@ -132,17 +132,17 @@ func (c *Core) GenerateDefinition(ctx context.Context, req *GenerateDefinitionRe
 	}
 
 	//Build audio file for anki
-	var ankiAudio *anki.Audio
+	var ankiAudio *anki2.Audio
 	if req.IncludeAudio && len(resp.Audio) > 0 {
 		filename := fmt.Sprintf(audioFormat, req.Word, time.Now().Unix())
 		c.logger.Debugw("audio received for definition", "word", req.Word, "bytes", len(resp.Audio), "filename", filename)
-		ankiAudio = &anki.Audio{Data: resp.Audio, Filename: filename, Fields: []string{"Front"}}
+		ankiAudio = &anki2.Audio{Data: resp.Audio, Filename: filename, Fields: []string{"Front"}}
 	}
 
 	//Add card to anki
-	if err := c.ankiClient.AddCard(ctx, anki.Note{
+	if err := c.ankiClient.AddCard(ctx, anki2.Note{
 		DeckName: req.DeckName,
-		CardType: anki.Basic,
+		CardType: anki2.Basic,
 		Front:    req.Word,
 		Back:     resp.Definition,
 		Audio:    ankiAudio,
@@ -155,9 +155,9 @@ func (c *Core) GenerateDefinition(ctx context.Context, req *GenerateDefinitionRe
 	return nil
 }
 
-func toRPCGender(gender string) rpc.Gender {
+func toRPCGender(gender string) rpc2.Gender {
 	if gender == "Male" {
-		return rpc.Male
+		return rpc2.Male
 	}
-	return rpc.Female
+	return rpc2.Female
 }

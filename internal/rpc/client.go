@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	pb "github.com/dafraer/sentence-gen-grpc-client/proto"
+	"github.com/dafraer/sentence-gen-grpc-client/internal/proto"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -23,7 +23,7 @@ var (
 
 type Client struct {
 	conn   *grpc.ClientConn
-	client pb.SentenceGenClient
+	client proto.SentenceGenClient
 	logger *zap.SugaredLogger
 	addr   string
 }
@@ -44,7 +44,7 @@ func NewClient(addr string, logger *zap.SugaredLogger) (*Client, error) {
 	}
 
 	//Create new SentenceGen client
-	client := pb.NewSentenceGenClient(conn)
+	client := proto.NewSentenceGenClient(conn)
 
 	logger.Infow("gRPC client created", "addr", addr)
 	return &Client{
@@ -65,13 +65,13 @@ func (c *Client) GenerateSentence(ctx context.Context, req *GenerateSentenceRequ
 	c.logger.Debugw("calling GenerateSentence", "word", req.Word, "wordLang", req.WordLanguage, "translationLang", req.TranslationLanguage, "includeAudio", req.IncludeAudio)
 
 	//Call grpc function
-	resp, err := c.client.GenerateSentence(ctx, &pb.GenerateSentenceRequest{
+	resp, err := c.client.GenerateSentence(ctx, &proto.GenerateSentenceRequest{
 		Word:                req.Word,
 		WordLanguage:        req.WordLanguage,
 		TranslationLanguage: req.TranslationLanguage,
 		TranslationHint:     req.TranslationHint,
 		IncludeAudio:        req.IncludeAudio,
-		VoiceGender:         pb.Gender(req.VoiceGender),
+		VoiceGender:         proto.Gender(req.VoiceGender),
 	})
 
 	if err != nil {
@@ -90,13 +90,13 @@ func (c *Client) GenerateSentence(ctx context.Context, req *GenerateSentenceRequ
 // Translate generates translation and audio for specified word
 func (c *Client) Translate(ctx context.Context, req *TranslateRequest) (*TranslateResponse, error) {
 	c.logger.Debugw("calling Translate", "word", req.Word, "fromLang", req.FromLanguage, "toLang", req.ToLanguage, "includeAudio", req.IncludeAudio)
-	resp, err := c.client.Translate(ctx, &pb.TranslateRequest{
+	resp, err := c.client.Translate(ctx, &proto.TranslateRequest{
 		Word:            req.Word,
 		FromLanguage:    req.FromLanguage,
 		ToLanguage:      req.ToLanguage,
 		TranslationHint: req.TranslationHint,
 		IncludeAudio:    req.IncludeAudio,
-		VoiceGender:     pb.Gender(req.VoiceGender),
+		VoiceGender:     proto.Gender(req.VoiceGender),
 	})
 
 	if err != nil {
@@ -115,12 +115,12 @@ func (c *Client) Translate(ctx context.Context, req *TranslateRequest) (*Transla
 // GenerateDefinition generates definition and audio for specified word
 func (c *Client) GenerateDefinition(ctx context.Context, req *GenerateDefinitionRequest) (*GenerateDefinitionResponse, error) {
 	c.logger.Debugw("calling GenerateDefinition", "word", req.Word, "lang", req.Language, "includeAudio", req.IncludeAudio)
-	resp, err := c.client.GenerateDefinition(ctx, &pb.GenerateDefinitionRequest{
+	resp, err := c.client.GenerateDefinition(ctx, &proto.GenerateDefinitionRequest{
 		Word:           req.Word,
 		Language:       req.Language,
 		DefinitionHint: req.DefinitionHint,
 		IncludeAudio:   req.IncludeAudio,
-		VoiceGender:    pb.Gender(req.VoiceGender),
+		VoiceGender:    proto.Gender(req.VoiceGender),
 	})
 	if err != nil {
 		mapped := handleErr(err)

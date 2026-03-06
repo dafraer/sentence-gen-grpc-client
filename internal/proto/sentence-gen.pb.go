@@ -7,11 +7,12 @@
 package proto
 
 import (
-	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
+
+	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
+	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 )
 
 const (
@@ -117,9 +118,9 @@ type GenerateSentenceRequest struct {
 	TranslationLanguage string                 `protobuf:"bytes,2,opt,name=translation_language,json=translationLanguage,proto3" json:"translation_language,omitempty"`
 	Word                string                 `protobuf:"bytes,3,opt,name=word,proto3" json:"word,omitempty"`
 	TranslationHint     string                 `protobuf:"bytes,4,opt,name=translation_hint,json=translationHint,proto3" json:"translation_hint,omitempty"`
-	IncludeAudio        bool                   `protobuf:"varint,5,opt,name=include_audio,json=includeAudio,proto3" json:"include_audio,omitempty"`
-	VoiceGender         Gender                 `protobuf:"varint,6,opt,name=voice_gender,json=voiceGender,proto3,enum=sentencegen.Gender" json:"voice_gender,omitempty"`
-	unknownFields       protoimpl.UnknownFields
+	IncludeAudio  bool   `protobuf:"varint,5,opt,name=include_audio,json=includeAudio,proto3" json:"include_audio,omitempty"`
+	VoiceGender   Gender `protobuf:"varint,6,opt,name=voice_gender,json=voiceGender,proto3,enum=sentencegen.Gender" json:"voice_gender,omitempty"`
+	unknownFields protoimpl.UnknownFields
 	sizeCache           protoimpl.SizeCache
 }
 
@@ -260,9 +261,9 @@ type GenerateDefinitionRequest struct {
 	Language       string                 `protobuf:"bytes,1,opt,name=language,proto3" json:"language,omitempty"`
 	Word           string                 `protobuf:"bytes,2,opt,name=word,proto3" json:"word,omitempty"`
 	DefinitionHint string                 `protobuf:"bytes,3,opt,name=definition_hint,json=definitionHint,proto3" json:"definition_hint,omitempty"`
-	IncludeAudio   bool                   `protobuf:"varint,4,opt,name=include_audio,json=includeAudio,proto3" json:"include_audio,omitempty"`
-	VoiceGender    Gender                 `protobuf:"varint,6,opt,name=voice_gender,json=voiceGender,proto3,enum=sentencegen.Gender" json:"voice_gender,omitempty"`
-	unknownFields  protoimpl.UnknownFields
+	IncludeAudio  bool   `protobuf:"varint,4,opt,name=include_audio,json=includeAudio,proto3" json:"include_audio,omitempty"`
+	VoiceGender   Gender `protobuf:"varint,6,opt,name=voice_gender,json=voiceGender,proto3,enum=sentencegen.Gender" json:"voice_gender,omitempty"`
+	unknownFields protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
 
@@ -389,9 +390,9 @@ type TranslateRequest struct {
 	ToLanguage      string                 `protobuf:"bytes,2,opt,name=to_language,json=toLanguage,proto3" json:"to_language,omitempty"`
 	Word            string                 `protobuf:"bytes,3,opt,name=word,proto3" json:"word,omitempty"`
 	TranslationHint string                 `protobuf:"bytes,4,opt,name=translation_hint,json=translationHint,proto3" json:"translation_hint,omitempty"`
-	IncludeAudio    bool                   `protobuf:"varint,5,opt,name=include_audio,json=includeAudio,proto3" json:"include_audio,omitempty"`
-	VoiceGender     Gender                 `protobuf:"varint,6,opt,name=voice_gender,json=voiceGender,proto3,enum=sentencegen.Gender" json:"voice_gender,omitempty"`
-	unknownFields   protoimpl.UnknownFields
+	IncludeAudio  bool   `protobuf:"varint,5,opt,name=include_audio,json=includeAudio,proto3" json:"include_audio,omitempty"`
+	VoiceGender   Gender `protobuf:"varint,6,opt,name=voice_gender,json=voiceGender,proto3,enum=sentencegen.Gender" json:"voice_gender,omitempty"`
+	unknownFields protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
 
@@ -469,8 +470,8 @@ func (x *TranslateRequest) GetVoiceGender() Gender {
 
 type TranslateResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Translation   string                 `protobuf:"bytes,2,opt,name=translation,proto3" json:"translation,omitempty"`
-	Audio         *Audio                 `protobuf:"bytes,3,opt,name=audio,proto3" json:"audio,omitempty"`
+	Translation   string `protobuf:"bytes,2,opt,name=translation,proto3" json:"translation,omitempty"`
+	Audio         *Audio `protobuf:"bytes,3,opt,name=audio,proto3" json:"audio,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }

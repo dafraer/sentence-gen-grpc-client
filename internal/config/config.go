@@ -1,7 +1,7 @@
 package config
 
 import (
-	"github.com/dafraer/sentence-gen-grpc-client/platform"
+	"github.com/dafraer/sentence-gen-grpc-client/internal/platform"
 )
 
 const (

@@ -8,8 +8,8 @@ import (
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
-	"github.com/dafraer/sentence-gen-grpc-client/core"
-	"github.com/dafraer/sentence-gen-grpc-client/text"
+	"github.com/dafraer/sentence-gen-grpc-client/internal/core"
+	"github.com/dafraer/sentence-gen-grpc-client/internal/text"
 	"go.uber.org/zap"
 )
 

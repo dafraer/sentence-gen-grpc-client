@@ -6,9 +6,9 @@ import (
 	"fmt"
 
 	"fyne.io/fyne/v2"
-	"github.com/dafraer/sentence-gen-grpc-client/anki"
-	"github.com/dafraer/sentence-gen-grpc-client/core"
-	"github.com/dafraer/sentence-gen-grpc-client/rpc"
+	"github.com/dafraer/sentence-gen-grpc-client/internal/anki"
+	"github.com/dafraer/sentence-gen-grpc-client/internal/core"
+	"github.com/dafraer/sentence-gen-grpc-client/internal/rpc"
 )
 
 var ErrUnknownLanguage = errors.New("unknown language")

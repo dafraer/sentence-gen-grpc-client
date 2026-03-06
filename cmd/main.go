@@ -3,12 +3,12 @@ package main
 import (
 	"os"
 
-	"github.com/dafraer/sentence-gen-grpc-client/anki"
-	"github.com/dafraer/sentence-gen-grpc-client/config"
-	"github.com/dafraer/sentence-gen-grpc-client/core"
-	"github.com/dafraer/sentence-gen-grpc-client/gui"
-	"github.com/dafraer/sentence-gen-grpc-client/rpc"
-	"github.com/dafraer/sentence-gen-grpc-client/text"
+	"github.com/dafraer/sentence-gen-grpc-client/internal/anki"
+	"github.com/dafraer/sentence-gen-grpc-client/internal/config"
+	"github.com/dafraer/sentence-gen-grpc-client/internal/core"
+	"github.com/dafraer/sentence-gen-grpc-client/internal/gui"
+	"github.com/dafraer/sentence-gen-grpc-client/internal/rpc"
+	"github.com/dafraer/sentence-gen-grpc-client/internal/text"
 	"go.uber.org/zap"
 )
 
