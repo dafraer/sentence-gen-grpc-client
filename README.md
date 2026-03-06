@@ -62,8 +62,8 @@ Download the latest build for your platform:
 
 **Linux:** Extract the archive and run the binary:
 ```sh
-tar -xzf Sengen.tar.xz
-./sengen
+tar -xf Sengen.tar.xz
+./usr/local/bin/cmd
 ```
 
 ---
