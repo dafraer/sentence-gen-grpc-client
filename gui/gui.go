@@ -34,6 +34,7 @@ func New(logger *zap.SugaredLogger, core *core.Core, text text.Text) *GUI {
 }
 
 func (gui *GUI) Run() {
+	gui.logger.Infow("starting GUI")
 	//Create new instance of the GUI app
 	gui.app = app.New()
 

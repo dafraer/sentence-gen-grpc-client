@@ -45,6 +45,8 @@ func main() {
 
 	appCore := core.New(sugar, grpcClient, ankiClient)
 
+	sugar.Infow("starting Sengen", "serverAddr", cfg.ServerAddr, "ankiAddr", cfg.AnkiConnectAddr, "logPath", cfg.LogPath)
+
 	appGUI := gui.New(sugar, appCore, txt)
 
 	appGUI.Run()

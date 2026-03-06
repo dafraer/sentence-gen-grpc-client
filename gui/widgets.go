@@ -69,10 +69,12 @@ func (gui *GUI) onGenerateSentenceSubmit(params *onSubmitParams) {
 		params.wordLang.Selected,
 		params.translationLang.Selected,
 		params.deck.Selected); err != nil {
+		gui.logger.Errorw("generate sentence form validation failed", "word", params.word.Text, "err", err)
 		params.form.Disable()
 		dialog.NewError(err, gui.window).Show()
 		return
 	}
+	gui.logger.Debugw("generate sentence form submitted", "word", params.word.Text, "wordLang", params.wordLang.Selected, "translationLang", params.translationLang.Selected, "deck", params.deck.Selected)
 	go gui.handleGenerateSentences(&generateSentencesParams{
 		word:            params.word.Text,
 		translationHint: params.translationHint.Text,
@@ -93,10 +95,12 @@ func (gui *GUI) onTranslateSubmit(params *onSubmitParams) {
 		params.wordLang.Selected,
 		params.translationLang.Selected,
 		params.deck.Selected); err != nil {
+		gui.logger.Errorw("translate form validation failed", "word", params.word.Text, "err", err)
 		params.form.Disable()
 		dialog.NewError(err, gui.window).Show()
 		return
 	}
+	gui.logger.Debugw("translate form submitted", "word", params.word.Text, "wordLang", params.wordLang.Selected, "translationLang", params.translationLang.Selected, "deck", params.deck.Selected)
 	go gui.handleTranslation(&translateParams{
 		Word:            params.word.Text,
 		TranslationHint: params.translationHint.Text,
@@ -125,10 +129,12 @@ func (gui *GUI) createDefinitionForm(params *definitionFormParams) *widget.Form 
 			params.definitionHint.Text,
 			params.wordLang.Selected,
 			params.deck.Selected); err != nil {
+			gui.logger.Errorw("generate definition form validation failed", "word", params.word.Text, "err", err)
 			form.Disable()
 			dialog.NewError(err, gui.window).Show()
 			return
 		}
+		gui.logger.Debugw("generate definition form submitted", "word", params.word.Text, "wordLang", params.wordLang.Selected, "deck", params.deck.Selected)
 		go gui.handleGenerateDefinition(&generateDefinitionParams{
 			Word:           params.word.Text,
 			DefinitionHint: params.definitionHint.Text,

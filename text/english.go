@@ -171,7 +171,7 @@ func (t *En) TextSuccess() string {
 }
 
 func (t *En) TextSentenceGeneratedSuccessfully() string {
-	return "Sentence with the word '%s' has been generated successfully"
+	return "Sentence with the word '%s' has been added successfully"
 }
 
 func (t *En) TextTranslationAddedSuccessfully() string {

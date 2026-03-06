@@ -29,17 +29,20 @@ type Client struct {
 }
 
 func NewClient(addr string, logger *zap.SugaredLogger) (*Client, error) {
+	logger.Infow("creating gRPC client", "addr", addr)
 	opts := []grpc.DialOption{
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	}
 
 	conn, err := grpc.NewClient(addr, opts...)
 	if err != nil {
+		logger.Errorw("failed to create gRPC connection", "addr", addr, "err", err)
 		return nil, err
 	}
 
 	client := pb.NewSentenceGenClient(conn)
 
+	logger.Infow("gRPC client created", "addr", addr)
 	return &Client{
 		conn:   conn,
 		client: client,
@@ -53,6 +56,7 @@ func (c *Client) Close() error {
 }
 
 func (c *Client) GenerateSentence(ctx context.Context, req *GenerateSentenceRequest) (*GenerateSentenceResponse, error) {
+	c.logger.Debugw("calling GenerateSentence", "word", req.Word, "wordLang", req.WordLanguage, "translationLang", req.TranslationLanguage, "includeAudio", req.IncludeAudio)
 	resp, err := c.client.GenerateSentence(ctx, &pb.GenerateSentenceRequest{
 		Word:                req.Word,
 		WordLanguage:        req.WordLanguage,
@@ -63,8 +67,11 @@ func (c *Client) GenerateSentence(ctx context.Context, req *GenerateSentenceRequ
 	})
 
 	if err != nil {
-		return nil, handleErr(err)
+		mapped := handleErr(err)
+		c.logger.Errorw("GenerateSentence RPC failed", "word", req.Word, "err", err, "mappedErr", mapped)
+		return nil, mapped
 	}
+	c.logger.Debugw("GenerateSentence RPC succeeded", "word", req.Word)
 	return &GenerateSentenceResponse{
 		OriginalSentence:   resp.OriginalSentence,
 		TranslatedSentence: resp.TranslatedSentence,
@@ -73,6 +80,7 @@ func (c *Client) GenerateSentence(ctx context.Context, req *GenerateSentenceRequ
 }
 
 func (c *Client) Translate(ctx context.Context, req *TranslateRequest) (*TranslateResponse, error) {
+	c.logger.Debugw("calling Translate", "word", req.Word, "fromLang", req.FromLanguage, "toLang", req.ToLanguage, "includeAudio", req.IncludeAudio)
 	resp, err := c.client.Translate(ctx, &pb.TranslateRequest{
 		Word:            req.Word,
 		FromLanguage:    req.FromLanguage,
@@ -83,9 +91,12 @@ func (c *Client) Translate(ctx context.Context, req *TranslateRequest) (*Transla
 	})
 
 	if err != nil {
-		return nil, handleErr(err)
+		mapped := handleErr(err)
+		c.logger.Errorw("Translate RPC failed", "word", req.Word, "err", err, "mappedErr", mapped)
+		return nil, mapped
 	}
 
+	c.logger.Debugw("Translate RPC succeeded", "word", req.Word)
 	return &TranslateResponse{
 		Translation: resp.Translation,
 		Audio:       resp.Audio.Data,
@@ -93,6 +104,7 @@ func (c *Client) Translate(ctx context.Context, req *TranslateRequest) (*Transla
 }
 
 func (c *Client) GenerateDefinition(ctx context.Context, req *GenerateDefinitionRequest) (*GenerateDefinitionResponse, error) {
+	c.logger.Debugw("calling GenerateDefinition", "word", req.Word, "lang", req.Language, "includeAudio", req.IncludeAudio)
 	resp, err := c.client.GenerateDefinition(ctx, &pb.GenerateDefinitionRequest{
 		Word:           req.Word,
 		Language:       req.Language,
@@ -101,9 +113,12 @@ func (c *Client) GenerateDefinition(ctx context.Context, req *GenerateDefinition
 		VoiceGender:    pb.Gender(req.VoiceGender),
 	})
 	if err != nil {
-		return nil, handleErr(err)
+		mapped := handleErr(err)
+		c.logger.Errorw("GenerateDefinition RPC failed", "word", req.Word, "err", err, "mappedErr", mapped)
+		return nil, mapped
 	}
 
+	c.logger.Debugw("GenerateDefinition RPC succeeded", "word", req.Word)
 	return &GenerateDefinitionResponse{
 		Definition: resp.Definition,
 		Audio:      resp.Audio.Data,
