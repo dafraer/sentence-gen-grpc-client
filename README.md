@@ -79,13 +79,13 @@ Download and install Anki from [apps.ankiweb.net](https://apps.ankiweb.net).
 #### 2. Install AnkiConnect
 
 1. Open Anki.
-2. Go to **Tools → Add-ons → Get Add-ons…**
+2. Go to **Tools -> Add-ons -> Get Add-ons…**
 3. Enter the code **`2055492159`** and click **OK**.
 4. Restart Anki when prompted.
 
 #### 3. Verify AnkiConnect is running
 
-AnkiConnect runs a local HTTP server on port **8765** whenever Anki is open. You can verify it's working by visiting [http://localhost:8765](http://localhost:8765) in your browser — you should see a JSON response.
+AnkiConnect runs a local HTTP server on port **8765** whenever Anki is open. You can verify it's working by visiting [http://localhost:8765](http://localhost:8765) in your browser - you should see a JSON response.
 
 > **Note:** Anki must be open and running in the background whenever you use Sengen.
 
