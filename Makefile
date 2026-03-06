@@ -6,7 +6,9 @@ push:
 	git add . && git commit -m "$(m)" && git push
 build-darwin:
 	fyne package -os darwin -icon ../media/darwin_logo.png -src ./cmd -name Sengen --release
-	mv ./Sengen.app ./builds/darwin/Sengen.app
+	hdiutil create -volname "Sengen" -srcfolder Sengen.app -ov -format UDZO Sengen.dmg
+	rm -rf ./Sengen.app
+	mv ./Sengen.dmg ./builds/darwin/Sengen.dmg
 build-windows:
 	fyne package -os windows -icon ../media/logo.png -src ./cmd -name Sengen -app-id com.kamil.sengen --release
 	mv ./Sengen.exe ./builds/windows/Sengen.exe
