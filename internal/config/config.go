@@ -6,7 +6,7 @@ import (
 
 const (
 	ankiConnectAddr = "localhost:8765"
-	serverAddr      = "localhost:50051"
+	serverAddr      = "sentence-gen-grpc-server-218429278955.europe-north1.run.app:443"
 )
 
 type Config struct {

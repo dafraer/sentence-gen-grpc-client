@@ -2,13 +2,16 @@ package rpc
 
 import (
 	"context"
+	"crypto/tls"
+	"crypto/x509"
 	"errors"
+	"fmt"
 
 	"github.com/dafraer/sentence-gen-grpc-client/internal/proto"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/status"
 )
 
@@ -30,9 +33,19 @@ type Client struct {
 // NewClient creates new grpc Client
 func NewClient(addr string, logger *zap.SugaredLogger) (*Client, error) {
 	logger.Infow("creating gRPC client", "addr", addr)
+
+	//Add TLS
+	//Get system trusted certificate authorities
+	systemRoots, err := x509.SystemCertPool()
+	if err != nil {
+		return nil, fmt.Errorf("failed to load system root CAs: %w", err)
+	}
+
+	//Use TLS using these certs
 	opts := []grpc.DialOption{
-		//TODO:Change to secure
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithTransportCredentials(credentials.NewTLS(&tls.Config{
+			RootCAs: systemRoots,
+		})),
 	}
 
 	//Create new grpc client
