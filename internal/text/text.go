@@ -20,10 +20,8 @@ type Text interface {
 	TextGenerateTranslationTitle() string
 	TextGenerateDefinitionTitle() string
 	TextDefinitionHint() string
-	TextSettingsTitle() string
 	TextDeck() string
 	GetLanguageCode(string) (string, bool)
-	TextError() string
 	TextErrUnknownLanguage() string
 	TextErrAnkiError() string
 	TextErrInvalidArgument() string
@@ -40,6 +38,10 @@ type Text interface {
 	TextTutorialTitle() string
 	TextTutorialDescription() string
 	TextTutorialLink() string
+	TextErrPickLanguages() string
+	TextErrLanguagesSame() string
+	TextErrPickLanguage() string
+	TextErrPickDeck() string
 }
 
 func NewText() Text {

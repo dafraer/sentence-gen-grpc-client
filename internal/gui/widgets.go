@@ -28,7 +28,7 @@ func (l *minWidthLayout) MinSize(_ []fyne.CanvasObject) fyne.Size {
 func listMinWidth(items []string) float32 {
 	longest := ""
 	for _, item := range items {
-		if len(item) > len(longest) {
+		if len([]rune(item)) > len([]rune(longest)) {
 			longest = item
 		}
 	}

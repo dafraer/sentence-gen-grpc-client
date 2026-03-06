@@ -35,22 +35,22 @@ type onSubmitParams struct {
 }
 
 type translateParams struct {
-	Word            string
-	TranslationHint string
-	WordLang        string
-	TranslationLang string
-	IncludeAudio    bool
-	AudioGender     string
-	Deck            string
+	word            string
+	translationHint string
+	wordLang        string
+	translationLang string
+	includeAudio    bool
+	audioGender     string
+	deck            string
 }
 
 type generateDefinitionParams struct {
-	Word           string
-	DefinitionHint string
-	WordLang       string
-	IncludeAudio   bool
-	AudioGender    string
-	Deck           string
+	word           string
+	definitionHint string
+	wordLang       string
+	includeAudio   bool
+	audioGender    string
+	deck           string
 }
 
 type definitionFormParams struct {

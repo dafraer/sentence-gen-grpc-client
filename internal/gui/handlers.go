@@ -4,12 +4,15 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"fyne.io/fyne/v2"
 	"github.com/dafraer/sentence-gen-grpc-client/internal/anki"
 	"github.com/dafraer/sentence-gen-grpc-client/internal/core"
 	"github.com/dafraer/sentence-gen-grpc-client/internal/rpc"
 )
+
+const timeOut = time.Second * 50
 
 var ErrUnknownLanguage = errors.New("unknown language")
 
@@ -32,7 +35,7 @@ func (gui *GUI) showErrorNotification(err error, word string) {
 		errText = gui.text.TextErrResourceExhausted()
 	case errors.Is(err, rpc.ErrUnavailable):
 		errText = gui.text.TextErrUnavailable()
-	case errors.Is(err, rpc.ErrUnknown):
+	default:
 		errText = gui.text.TextErrUnknown()
 	}
 
@@ -78,8 +81,12 @@ func (gui *GUI) handleGenerateSentences(params *generateSentencesParams) {
 		return
 	}
 
+	//Create context with timeout
+	ctx, cancel := context.WithTimeout(context.Background(), timeOut)
+	defer cancel()
+
 	//Generate sentence and add it to anki
-	if err := gui.core.GenerateSentence(context.Background(), &core.GenerateSentenceRequest{
+	if err := gui.core.GenerateSentence(ctx, &core.GenerateSentenceRequest{
 		Word:                params.word,
 		WordLanguage:        wordLang,
 		TranslationLanguage: translationLang,
@@ -114,8 +121,12 @@ func (gui *GUI) handleTranslation(params *translateParams) {
 		return
 	}
 
+	//Create context with timeout
+	ctx, cancel := context.WithTimeout(context.Background(), timeOut)
+	defer cancel()
+
 	//Call translate method to generate the translation and add it to anki
-	if err := gui.core.Translate(context.Background(), &core.TranslateRequest{
+	if err := gui.core.Translate(ctx, &core.TranslateRequest{
 		Word:            params.Word,
 		WordLanguage:    wordLang,
 		TranslationLang: translationLang,
@@ -145,8 +156,12 @@ func (gui *GUI) handleGenerateDefinition(params *generateDefinitionParams) {
 		return
 	}
 
+	//Create context with timeout
+	ctx, cancel := context.WithTimeout(context.Background(), timeOut)
+	defer cancel()
+
 	//Call core method to generate definition and add it to anki
-	if err := gui.core.GenerateDefinition(context.Background(), &core.GenerateDefinitionRequest{
+	if err := gui.core.GenerateDefinition(ctx, &core.GenerateDefinitionRequest{
 		Word:           params.Word,
 		Language:       wordLang,
 		DefinitionHint: params.DefinitionHint,

@@ -142,10 +142,6 @@ func (t *En) TextDefinitionHint() string {
 	return "Definition hint"
 }
 
-func (t *En) TextSettingsTitle() string {
-	return "# Settings"
-}
-
 func (t *En) TextDeck() string {
 	return "Deck"
 }
@@ -157,10 +153,6 @@ func (t *En) GetLanguageCode(displayName string) (string, bool) {
 		}
 	}
 	return "", false
-}
-
-func (t *En) TextError() string {
-	return "Error"
 }
 
 func (t *En) TextErrUnknownLanguage() string {
@@ -225,4 +217,20 @@ func (t *En) TextTutorialDescription() string {
 
 func (t *En) TextTutorialLink() string {
 	return "github page"
+}
+
+func (t *En) TextErrPickLanguages() string {
+	return "pick languages"
+}
+
+func (t *En) TextErrLanguagesSame() string {
+	return "languages cannot be the same"
+}
+
+func (t *En) TextErrPickLanguage() string {
+	return "pick a language"
+}
+
+func (t *En) TextErrPickDeck() string {
+	return "pick a deck"
 }

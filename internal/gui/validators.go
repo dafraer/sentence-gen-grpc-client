@@ -2,7 +2,6 @@ package gui
 
 import (
 	"errors"
-	"fmt"
 	"strings"
 )
 
@@ -25,10 +24,10 @@ func (gui *GUI) validateWord(w string) error {
 // validateLanguages checks that languages are not empty and not identical
 func (gui *GUI) validateLanguages(lang1, lang2 string) error {
 	if lang1 == "" || lang2 == "" {
-		return fmt.Errorf("pick languages")
+		return errors.New(gui.text.TextErrPickLanguages())
 	}
 	if lang1 == lang2 {
-		return fmt.Errorf("languages cannot be the same")
+		return errors.New(gui.text.TextErrLanguagesSame())
 	}
 	return nil
 }
@@ -50,7 +49,7 @@ func (gui *GUI) validateForm(word, hint, lang1, lang2, deck string) error {
 		return err
 	}
 	if deck == "" {
-		return fmt.Errorf("pick a deck")
+		return errors.New(gui.text.TextErrPickDeck())
 	}
 	return gui.validateHint(hint)
 }
@@ -61,10 +60,10 @@ func (gui *GUI) validateDefinitionForm(word, hint, lang, deck string) error {
 		return err
 	}
 	if lang == "" {
-		return fmt.Errorf("pick a language")
+		return errors.New(gui.text.TextErrPickLanguage())
 	}
 	if deck == "" {
-		return fmt.Errorf("pick a deck")
+		return errors.New(gui.text.TextErrPickDeck())
 	}
 	return gui.validateHint(hint)
 }

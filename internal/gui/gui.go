@@ -101,10 +101,10 @@ func (gui *GUI) createTutorialPage() fyne.CanvasObject {
 	//Parse project url
 	u, err := url.Parse(projectLink)
 	if err != nil {
-		gui.logger.Errorw("Error parsing url", "error", err)
+		panic(err)
 	}
 
-	// Create the body of the page which is text + embedded link to the github page
+	// Create the body of the page which is text + embedded link to the Github page
 	body := widget.NewRichText(
 		&widget.TextSegment{Text: gui.text.TextTutorialDescription() + " ", Style: widget.RichTextStyle{Inline: true}},
 		&widget.HyperlinkSegment{Text: gui.text.TextTutorialLink(), URL: u},

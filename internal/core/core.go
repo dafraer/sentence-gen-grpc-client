@@ -10,7 +10,10 @@ import (
 	"go.uber.org/zap"
 )
 
-const audioFormat = "%s_%d.wav" //Format for .wav audio
+const (
+	audioFormat = "%s_%d.wav" //Format for .wav audio
+	male        = "Male"
+)
 
 type Core struct {
 	logger     *zap.SugaredLogger
@@ -156,7 +159,7 @@ func (c *Core) GenerateDefinition(ctx context.Context, req *GenerateDefinitionRe
 }
 
 func toRPCGender(gender string) rpc2.Gender {
-	if gender == "Male" {
+	if gender == male {
 		return rpc2.Male
 	}
 	return rpc2.Female

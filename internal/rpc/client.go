@@ -25,7 +25,6 @@ type Client struct {
 	conn   *grpc.ClientConn
 	client proto.SentenceGenClient
 	logger *zap.SugaredLogger
-	addr   string
 }
 
 // NewClient creates new grpc Client
@@ -51,7 +50,6 @@ func NewClient(addr string, logger *zap.SugaredLogger) (*Client, error) {
 		conn:   conn,
 		client: client,
 		logger: logger,
-		addr:   addr,
 	}, nil
 }
 
@@ -80,6 +78,7 @@ func (c *Client) GenerateSentence(ctx context.Context, req *GenerateSentenceRequ
 		return nil, mapped
 	}
 	c.logger.Debugw("GenerateSentence RPC succeeded", "word", req.Word)
+
 	return &GenerateSentenceResponse{
 		OriginalSentence:   resp.OriginalSentence,
 		TranslatedSentence: resp.TranslatedSentence,

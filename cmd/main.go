@@ -46,6 +46,12 @@ func main() {
 		panic(err)
 	}
 
+	defer func(grpcClient *rpc.Client) {
+		if err := grpcClient.Close(); err != nil {
+			panic(err)
+		}
+	}(grpcClient)
+
 	//Get the text
 	txt := text.NewText()
 
