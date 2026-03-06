@@ -333,8 +333,8 @@ func (x *GenerateDefinitionRequest) GetVoiceGender() Gender {
 
 type GenerateDefinitionResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Definition    string                 `protobuf:"bytes,2,opt,name=definition,proto3" json:"definition,omitempty"`
-	Audio         *Audio                 `protobuf:"bytes,3,opt,name=audio,proto3" json:"audio,omitempty"` //word audio
+	Definition    string                 `protobuf:"bytes,1,opt,name=definition,proto3" json:"definition,omitempty"`
+	Audio         *Audio                 `protobuf:"bytes,2,opt,name=audio,proto3" json:"audio,omitempty"` //word audio
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -469,8 +469,8 @@ func (x *TranslateRequest) GetVoiceGender() Gender {
 
 type TranslateResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Translation   string                 `protobuf:"bytes,2,opt,name=translation,proto3" json:"translation,omitempty"`
-	Audio         *Audio                 `protobuf:"bytes,3,opt,name=audio,proto3" json:"audio,omitempty"`
+	Translation   string                 `protobuf:"bytes,1,opt,name=translation,proto3" json:"translation,omitempty"`
+	Audio         *Audio                 `protobuf:"bytes,2,opt,name=audio,proto3" json:"audio,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -545,9 +545,9 @@ const file_internal_proto_sentence_gen_proto_rawDesc = "" +
 	"\fvoice_gender\x18\x05 \x01(\x0e2\x13.sentencegen.GenderR\vvoiceGender\"f\n" +
 	"\x1aGenerateDefinitionResponse\x12\x1e\n" +
 	"\n" +
-	"definition\x18\x02 \x01(\tR\n" +
+	"definition\x18\x01 \x01(\tR\n" +
 	"definition\x12(\n" +
-	"\x05audio\x18\x03 \x01(\v2\x12.sentencegen.AudioR\x05audio\"\xf4\x01\n" +
+	"\x05audio\x18\x02 \x01(\v2\x12.sentencegen.AudioR\x05audio\"\xf4\x01\n" +
 	"\x10TranslateRequest\x12#\n" +
 	"\rfrom_language\x18\x01 \x01(\tR\ffromLanguage\x12\x1f\n" +
 	"\vto_language\x18\x02 \x01(\tR\n" +
@@ -557,8 +557,8 @@ const file_internal_proto_sentence_gen_proto_rawDesc = "" +
 	"\rinclude_audio\x18\x05 \x01(\bR\fincludeAudio\x126\n" +
 	"\fvoice_gender\x18\x06 \x01(\x0e2\x13.sentencegen.GenderR\vvoiceGender\"_\n" +
 	"\x11TranslateResponse\x12 \n" +
-	"\vtranslation\x18\x02 \x01(\tR\vtranslation\x12(\n" +
-	"\x05audio\x18\x03 \x01(\v2\x12.sentencegen.AudioR\x05audio*,\n" +
+	"\vtranslation\x18\x01 \x01(\tR\vtranslation\x12(\n" +
+	"\x05audio\x18\x02 \x01(\v2\x12.sentencegen.AudioR\x05audio*,\n" +
 	"\x06Gender\x12\x11\n" +
 	"\rGENDER_FEMALE\x10\x00\x12\x0f\n" +
 	"\vGENDER_MALE\x10\x012\xa1\x02\n" +
