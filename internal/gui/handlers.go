@@ -105,19 +105,19 @@ func (gui *GUI) handleGenerateSentences(params *generateSentencesParams) {
 
 // handleTranslation calls core method to generate translation and add it to anki
 func (gui *GUI) handleTranslation(params *translateParams) {
-	gui.logger.Infow("handle translation", "word", params.Word, "wordLang", params.WordLang, "translationLang", params.TranslationLang, "deck", params.Deck, "includeAudio", params.IncludeAudio)
+	gui.logger.Infow("handle translation", "word", params.word, "wordLang", params.wordLang, "translationLang", params.translationLang, "deck", params.deck, "includeAudio", params.includeAudio)
 
 	//Get language code since server expects language code
-	wordLang, ok := gui.text.GetLanguageCode(params.WordLang)
+	wordLang, ok := gui.text.GetLanguageCode(params.wordLang)
 	if !ok {
-		gui.logger.Errorw("unknown word language", "lang", params.WordLang)
-		gui.showErrorNotification(ErrUnknownLanguage, params.Word)
+		gui.logger.Errorw("unknown word language", "lang", params.wordLang)
+		gui.showErrorNotification(ErrUnknownLanguage, params.word)
 		return
 	}
-	translationLang, ok := gui.text.GetLanguageCode(params.TranslationLang)
+	translationLang, ok := gui.text.GetLanguageCode(params.translationLang)
 	if !ok {
-		gui.logger.Errorw("unknown translation language", "lang", params.TranslationLang)
-		gui.showErrorNotification(ErrUnknownLanguage, params.Word)
+		gui.logger.Errorw("unknown translation language", "lang", params.translationLang)
+		gui.showErrorNotification(ErrUnknownLanguage, params.word)
 		return
 	}
 
@@ -127,32 +127,32 @@ func (gui *GUI) handleTranslation(params *translateParams) {
 
 	//Call translate method to generate the translation and add it to anki
 	if err := gui.core.Translate(ctx, &core.TranslateRequest{
-		Word:            params.Word,
+		Word:            params.word,
 		WordLanguage:    wordLang,
 		TranslationLang: translationLang,
-		TranslationHint: params.TranslationHint,
-		IncludeAudio:    params.IncludeAudio,
-		AudioGender:     params.AudioGender,
-		DeckName:        params.Deck,
+		TranslationHint: params.translationHint,
+		IncludeAudio:    params.includeAudio,
+		AudioGender:     params.audioGender,
+		DeckName:        params.deck,
 	}); err != nil {
-		gui.logger.Errorw("translation failed", "word", params.Word, "err", err)
-		gui.showErrorNotification(err, params.Word)
+		gui.logger.Errorw("translation failed", "word", params.word, "err", err)
+		gui.showErrorNotification(err, params.word)
 		return
 	}
 
-	gui.logger.Infow("translation succeeded", "word", params.Word)
-	gui.showSuccessNotification(fmt.Sprintf(gui.text.TextTranslationAddedSuccessfully(), params.Word))
+	gui.logger.Infow("translation succeeded", "word", params.word)
+	gui.showSuccessNotification(fmt.Sprintf(gui.text.TextTranslationAddedSuccessfully(), params.word))
 }
 
 // handleGenerateDefinition calls core method to generate definition and add it to anki
 func (gui *GUI) handleGenerateDefinition(params *generateDefinitionParams) {
-	gui.logger.Infow("handle generate definition", "word", params.Word, "wordLang", params.WordLang, "deck", params.Deck, "includeAudio", params.IncludeAudio)
+	gui.logger.Infow("handle generate definition", "word", params.word, "wordLang", params.wordLang, "deck", params.deck, "includeAudio", params.includeAudio)
 
 	//Get language code since server expects it
-	wordLang, ok := gui.text.GetLanguageCode(params.WordLang)
+	wordLang, ok := gui.text.GetLanguageCode(params.wordLang)
 	if !ok {
-		gui.logger.Errorw("unknown word language", "lang", params.WordLang)
-		gui.showErrorNotification(ErrUnknownLanguage, params.Word)
+		gui.logger.Errorw("unknown word language", "lang", params.wordLang)
+		gui.showErrorNotification(ErrUnknownLanguage, params.word)
 		return
 	}
 
@@ -162,18 +162,18 @@ func (gui *GUI) handleGenerateDefinition(params *generateDefinitionParams) {
 
 	//Call core method to generate definition and add it to anki
 	if err := gui.core.GenerateDefinition(ctx, &core.GenerateDefinitionRequest{
-		Word:           params.Word,
+		Word:           params.word,
 		Language:       wordLang,
-		DefinitionHint: params.DefinitionHint,
-		IncludeAudio:   params.IncludeAudio,
-		AudioGender:    params.AudioGender,
-		DeckName:       params.Deck,
+		DefinitionHint: params.definitionHint,
+		IncludeAudio:   params.includeAudio,
+		AudioGender:    params.audioGender,
+		DeckName:       params.deck,
 	}); err != nil {
-		gui.logger.Errorw("generate definition failed", "word", params.Word, "err", err)
-		gui.showErrorNotification(err, params.Word)
+		gui.logger.Errorw("generate definition failed", "word", params.word, "err", err)
+		gui.showErrorNotification(err, params.word)
 		return
 	}
 
-	gui.logger.Infow("generate definition succeeded", "word", params.Word)
-	gui.showSuccessNotification(fmt.Sprintf(gui.text.TextDefinitionAddedSuccessfully(), params.Word))
+	gui.logger.Infow("generate definition succeeded", "word", params.word)
+	gui.showSuccessNotification(fmt.Sprintf(gui.text.TextDefinitionAddedSuccessfully(), params.word))
 }

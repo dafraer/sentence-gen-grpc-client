@@ -118,13 +118,13 @@ func (gui *GUI) onTranslateSubmit(params *onSubmitParams) {
 
 	//Run handler in a separate goroutine
 	go gui.handleTranslation(&translateParams{
-		Word:            params.word.Text,
-		TranslationHint: params.translationHint.Text,
-		WordLang:        params.wordLang.Selected,
-		TranslationLang: params.translationLang.Selected,
-		IncludeAudio:    params.audio.Checked,
-		AudioGender:     params.voice.Selected,
-		Deck:            params.deck.Selected,
+		word:            params.word.Text,
+		translationHint: params.translationHint.Text,
+		wordLang:        params.wordLang.Selected,
+		translationLang: params.translationLang.Selected,
+		includeAudio:    params.audio.Checked,
+		audioGender:     params.voice.Selected,
+		deck:            params.deck.Selected,
 	})
 
 	//Reset the fields that will be re-entered in the next call
@@ -160,12 +160,12 @@ func (gui *GUI) createDefinitionForm(params *definitionFormParams) *widget.Form 
 
 		//Run handler in a separate goroutine
 		go gui.handleGenerateDefinition(&generateDefinitionParams{
-			Word:           params.word.Text,
-			DefinitionHint: params.definitionHint.Text,
-			WordLang:       params.wordLang.Selected,
-			IncludeAudio:   params.audio.Checked,
-			AudioGender:    params.voice.Selected,
-			Deck:           params.deck.Selected,
+			word:           params.word.Text,
+			definitionHint: params.definitionHint.Text,
+			wordLang:       params.wordLang.Selected,
+			includeAudio:   params.audio.Checked,
+			audioGender:    params.voice.Selected,
+			deck:           params.deck.Selected,
 		})
 
 		//Disable the form and reset the fields that will be re-entered in the next call
