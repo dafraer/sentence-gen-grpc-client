@@ -187,7 +187,7 @@ func (t *En) TextTutorialTitle() string {
 }
 
 func (t *En) TextTutorialDescription() string {
-	return "You can check out the tutorial on project's"
+	return "You can check out the tutorial on the project's"
 }
 
 func (t *En) TextTutorialLink() string {
