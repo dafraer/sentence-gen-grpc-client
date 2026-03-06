@@ -14,7 +14,9 @@ import (
 )
 
 const (
-	projectLink = "https://github.com/dafraer/sentence-gen-grpc-client"
+	projectLink  = "https://github.com/dafraer/sentence-gen-grpc-client"
+	screenWidth  = 720
+	screenHeight = 480
 )
 
 type GUI struct {
@@ -25,6 +27,7 @@ type GUI struct {
 	text   text.Text
 }
 
+// New creates new GUI
 func New(logger *zap.SugaredLogger, core *core.Core, text text.Text) *GUI {
 	return &GUI{
 		logger: logger,
@@ -33,6 +36,7 @@ func New(logger *zap.SugaredLogger, core *core.Core, text text.Text) *GUI {
 	}
 }
 
+// Run runs the app
 func (gui *GUI) Run() {
 	gui.logger.Infow("starting GUI")
 	//Create new instance of the GUI app
@@ -83,29 +87,38 @@ func (gui *GUI) Run() {
 
 	//Set window content and size
 	gui.window.SetContent(split)
-	gui.window.Resize(fyne.NewSize(1000, 1000))
+	gui.window.Resize(fyne.NewSize(screenWidth, screenHeight))
 
 	//Run the gui
 	gui.window.ShowAndRun()
 }
 
+// createTutorialPage creates tutorial page
 func (gui *GUI) createTutorialPage() fyne.CanvasObject {
+	//Create page header
 	header := widget.NewRichTextFromMarkdown(gui.text.TextTutorialTitle())
+
+	//Parse project url
 	u, err := url.Parse(projectLink)
 	if err != nil {
 		gui.logger.Errorw("Error parsing url", "error", err)
 	}
+
+	// Create the body of the page which is text + embedded link to the github page
 	body := widget.NewRichText(
 		&widget.TextSegment{Text: gui.text.TextTutorialDescription() + " ", Style: widget.RichTextStyle{Inline: true}},
 		&widget.HyperlinkSegment{Text: gui.text.TextTutorialLink(), URL: u},
 	)
+
 	return container.NewVBox(header, body)
 }
 
+// createGenerateSentencePage creates generate sentence page
 func (gui *GUI) createGenerateSentencePage() fyne.CanvasObject {
 	return gui.createTemplateTranslationPage(gui.text.TextGenerateSentenceTitle(), gui.onGenerateSentenceSubmit)
 }
 
+// createTranslatePage creates translate page
 func (gui *GUI) createTranslatePage() fyne.CanvasObject {
 	return gui.createTemplateTranslationPage(gui.text.TextGenerateTranslationTitle(), gui.onTranslateSubmit)
 }
@@ -141,7 +154,7 @@ func (gui *GUI) createTemplateTranslationPage(title string, onSubmit func(params
 	//Create deck selector populated from Anki
 	decks, err := gui.core.GetDeckNames(context.Background())
 	if err != nil {
-		gui.logger.Warnw("failed to fetch deck names", "err", err)
+		gui.logger.Errorw("failed to fetch deck names", "err", err)
 	}
 	deckSelect := widget.NewSelect(decks, nil)
 
@@ -178,6 +191,7 @@ func (gui *GUI) createTemplateTranslationPage(title string, onSubmit func(params
 	return container.NewVBox(header, form)
 }
 
+// createGenerateDefinitionPage creates generate definition page
 func (gui *GUI) createGenerateDefinitionPage() fyne.CanvasObject {
 	//Create title
 	title := widget.NewRichTextFromMarkdown(gui.text.TextGenerateDefinitionTitle())

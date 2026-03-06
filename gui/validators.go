@@ -11,6 +11,7 @@ const (
 	maxWordLen = 100
 )
 
+// validateWord checks that a word is not empty and not too long
 func (gui *GUI) validateWord(w string) error {
 	if strings.TrimSpace(w) == "" {
 		return errors.New(gui.text.TextErrWordRequired())
@@ -21,6 +22,7 @@ func (gui *GUI) validateWord(w string) error {
 	return nil
 }
 
+// validateLanguages checks that languages are not empty and not identical
 func (gui *GUI) validateLanguages(lang1, lang2 string) error {
 	if lang1 == "" || lang2 == "" {
 		return fmt.Errorf("pick languages")
@@ -31,6 +33,7 @@ func (gui *GUI) validateLanguages(lang1, lang2 string) error {
 	return nil
 }
 
+// validateHint checks that the hint is not too long
 func (gui *GUI) validateHint(h string) error {
 	if len([]rune(h)) > maxHintLen {
 		return errors.New(gui.text.TextErrHintTooLong())
@@ -38,6 +41,7 @@ func (gui *GUI) validateHint(h string) error {
 	return nil
 }
 
+// validateForm validates each field in the form
 func (gui *GUI) validateForm(word, hint, lang1, lang2, deck string) error {
 	if err := gui.validateWord(word); err != nil {
 		return err
@@ -51,6 +55,7 @@ func (gui *GUI) validateForm(word, hint, lang1, lang2, deck string) error {
 	return gui.validateHint(hint)
 }
 
+// validateDefinitionForm checks each field in the definition form
 func (gui *GUI) validateDefinitionForm(word, hint, lang, deck string) error {
 	if err := gui.validateWord(word); err != nil {
 		return err

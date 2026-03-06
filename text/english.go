@@ -166,6 +166,38 @@ func (t *En) TextErrUnknownLanguage() string {
 	return "Unknown language"
 }
 
+func (t *En) TextErrAnkiError() string {
+	return "Anki error"
+}
+
+func (t *En) TextErrInvalidArgument() string {
+	return "Invalid argument"
+}
+
+func (t *En) TextErrDeadlineExceeded() string {
+	return "Server deadline exceeded"
+}
+
+func (t *En) TextErrInternalServer() string {
+	return "Internal server error"
+}
+
+func (t *En) TextErrResourceExhausted() string {
+	return "Quota limit reached, try again tomorrow"
+}
+
+func (t *En) TextErrUnavailable() string {
+	return "Server is unavailable"
+}
+
+func (t *En) TextErrUnknown() string {
+	return "Unknown error"
+}
+
+func (t *En) TextErrAddingWord() string {
+	return "Error adding word '%s'"
+}
+
 func (t *En) TextSuccess() string {
 	return "Success"
 }

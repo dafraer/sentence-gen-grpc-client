@@ -23,6 +23,8 @@ func (l *minWidthLayout) MinSize(_ []fyne.CanvasObject) fyne.Size {
 	return fyne.NewSize(l.width, 0)
 }
 
+// listMinWidth calculates the minimum width that a list can take
+// Minimum width is based on list's longest element
 func listMinWidth(items []string) float32 {
 	longest := ""
 	for _, item := range items {
@@ -30,10 +32,12 @@ func listMinWidth(items []string) float32 {
 			longest = item
 		}
 	}
-	return widget.NewLabel(longest).MinSize().Width + theme.Padding()*4
+	return widget.NewLabel(longest).MinSize().Width + theme.Padding()
 }
 
+// createForm creates form for Translate and Generate sentence pages
 func (gui *GUI) createForm(params *formParams) *widget.Form {
+	//Create new form
 	form := widget.NewForm(
 		&widget.FormItem{Text: gui.text.TextWord(), Widget: params.word},
 		&widget.FormItem{Text: gui.text.TextTranslationHint(), Widget: params.translationHint},
@@ -43,6 +47,7 @@ func (gui *GUI) createForm(params *formParams) *widget.Form {
 		&widget.FormItem{Text: gui.text.TextVoice(), Widget: params.voice},
 		&widget.FormItem{Text: gui.text.TextDeck(), Widget: params.deck},
 	)
+	//Define onSubmit function from the params and disable the form
 	form.OnSubmit = func() {
 		params.onSubmit(&onSubmitParams{
 			form:            form,
@@ -57,11 +62,13 @@ func (gui *GUI) createForm(params *formParams) *widget.Form {
 		form.Disable()
 	}
 	form.SubmitText = gui.text.TextGenerate()
+	//Refresh the form so we can disable it
 	form.Refresh()
 	form.Disable()
 	return form
 }
 
+// onGenerateSentenceSubmit is called when Generate Sentence form is submitted
 func (gui *GUI) onGenerateSentenceSubmit(params *onSubmitParams) {
 	//Extra check to make sure invalid data is not passed to the handler
 	if err := gui.validateForm(params.word.Text,
@@ -70,11 +77,15 @@ func (gui *GUI) onGenerateSentenceSubmit(params *onSubmitParams) {
 		params.translationLang.Selected,
 		params.deck.Selected); err != nil {
 		gui.logger.Errorw("generate sentence form validation failed", "word", params.word.Text, "err", err)
+
+		//In case of validation error show error dialog and disable the form
 		params.form.Disable()
 		dialog.NewError(err, gui.window).Show()
 		return
 	}
 	gui.logger.Debugw("generate sentence form submitted", "word", params.word.Text, "wordLang", params.wordLang.Selected, "translationLang", params.translationLang.Selected, "deck", params.deck.Selected)
+
+	//Run handler in a separate goroutine
 	go gui.handleGenerateSentences(&generateSentencesParams{
 		word:            params.word.Text,
 		translationHint: params.translationHint.Text,
@@ -84,10 +95,13 @@ func (gui *GUI) onGenerateSentenceSubmit(params *onSubmitParams) {
 		audioGender:     params.voice.Selected,
 		deck:            params.deck.Selected,
 	})
+
+	//Reset the fields that will be re-entered in the next call
 	params.word.SetText("")
 	params.translationHint.SetText("")
 }
 
+// onTranslateSubmit is called when Translate form is submitted
 func (gui *GUI) onTranslateSubmit(params *onSubmitParams) {
 	//Extra check to make sure invalid data is not passed to the handler
 	if err := gui.validateForm(params.word.Text,
@@ -101,6 +115,8 @@ func (gui *GUI) onTranslateSubmit(params *onSubmitParams) {
 		return
 	}
 	gui.logger.Debugw("translate form submitted", "word", params.word.Text, "wordLang", params.wordLang.Selected, "translationLang", params.translationLang.Selected, "deck", params.deck.Selected)
+
+	//Run handler in a separate goroutine
 	go gui.handleTranslation(&translateParams{
 		Word:            params.word.Text,
 		TranslationHint: params.translationHint.Text,
@@ -110,11 +126,15 @@ func (gui *GUI) onTranslateSubmit(params *onSubmitParams) {
 		AudioGender:     params.voice.Selected,
 		Deck:            params.deck.Selected,
 	})
+
+	//Reset the fields that will be re-entered in the next call
 	params.word.SetText("")
 	params.translationHint.SetText("")
 }
 
+// createDefinitionForm creates form for Generate Definition page
 func (gui *GUI) createDefinitionForm(params *definitionFormParams) *widget.Form {
+	//Create new form
 	form := widget.NewForm(
 		&widget.FormItem{Text: gui.text.TextWord(), Widget: params.word},
 		&widget.FormItem{Text: gui.text.TextDefinitionHint(), Widget: params.definitionHint},
@@ -123,6 +143,8 @@ func (gui *GUI) createDefinitionForm(params *definitionFormParams) *widget.Form 
 		&widget.FormItem{Text: gui.text.TextVoice(), Widget: params.voice},
 		&widget.FormItem{Text: gui.text.TextDeck(), Widget: params.deck},
 	)
+
+	//Define onSubmit function
 	form.OnSubmit = func() {
 		//Extra check to make sure invalid data is not passed to the handler
 		if err := gui.validateDefinitionForm(params.word.Text,
@@ -135,6 +157,8 @@ func (gui *GUI) createDefinitionForm(params *definitionFormParams) *widget.Form 
 			return
 		}
 		gui.logger.Debugw("generate definition form submitted", "word", params.word.Text, "wordLang", params.wordLang.Selected, "deck", params.deck.Selected)
+
+		//Run handler in a separate goroutine
 		go gui.handleGenerateDefinition(&generateDefinitionParams{
 			Word:           params.word.Text,
 			DefinitionHint: params.definitionHint.Text,
@@ -143,16 +167,21 @@ func (gui *GUI) createDefinitionForm(params *definitionFormParams) *widget.Form 
 			AudioGender:    params.voice.Selected,
 			Deck:           params.deck.Selected,
 		})
+
+		//Disable the form and reset the fields that will be re-entered in the next call
 		form.Disable()
 		params.word.SetText("")
 		params.definitionHint.SetText("")
 	}
 	form.SubmitText = gui.text.TextGenerate()
+	//Refresh form right away so we can disable it
 	form.Refresh()
 	form.Disable()
 	return form
 }
 
+// createVoicePicker creates a voice picker
+// The voices available are Male and Female
 func (gui *GUI) createVoicePicker() *widget.Select {
 	genders := gui.text.GetGenders()
 	voiceGenderSelect := widget.NewSelect(genders, nil)

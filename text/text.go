@@ -25,6 +25,14 @@ type Text interface {
 	GetLanguageCode(string) (string, bool)
 	TextError() string
 	TextErrUnknownLanguage() string
+	TextErrAnkiError() string
+	TextErrInvalidArgument() string
+	TextErrDeadlineExceeded() string
+	TextErrInternalServer() string
+	TextErrResourceExhausted() string
+	TextErrUnavailable() string
+	TextErrUnknown() string
+	TextErrAddingWord() string
 	TextSuccess() string
 	TextSentenceGeneratedSuccessfully() string
 	TextTranslationAddedSuccessfully() string
