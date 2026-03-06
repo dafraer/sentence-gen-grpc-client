@@ -33,7 +33,7 @@ message GenerateDefinitionRequest {
   string word = 2;
   string definition_hint = 3;
   bool include_audio = 4;
-  Gender voice_gender = 6;
+  Gender voice_gender = 5;
 }
 
 message GenerateDefinitionResponse {
