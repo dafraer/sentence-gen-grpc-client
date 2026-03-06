@@ -74,20 +74,8 @@ func (t *En) GetGenders() []string {
 	return []string{"Male", "Female"}
 }
 
-func (t *En) GetHomePage() string {
-	return `
-# Home 
-
-## This app:
-- Generates sentences 
-- Translates
-- Generates definitions
-- Adds all of the above to your anki card
-`
-}
-
 func (t *En) GetPageNames() []string {
-	return []string{"Home", "Generate sentence", "Translate", "Generate definition"}
+	return []string{"Generate sentence", "Translate", "Generate definition", "Tutorial"}
 }
 
 func (t *En) TextMale() string {
@@ -192,4 +180,16 @@ func (t *En) TextTranslationAddedSuccessfully() string {
 
 func (t *En) TextDefinitionAddedSuccessfully() string {
 	return "Definition of the word '%s' has been added successfully"
+}
+
+func (t *En) TextTutorialTitle() string {
+	return "# Tutorial"
+}
+
+func (t *En) TextTutorialDescription() string {
+	return "You can check out the tutorial on project's"
+}
+
+func (t *En) TextTutorialLink() string {
+	return "github page"
 }

@@ -1,4 +1,5 @@
 /.idea
 .env
-/.gocache
+.gocache
 .DS_Store
+/.claude

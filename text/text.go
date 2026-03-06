@@ -2,7 +2,6 @@ package text
 
 type Text interface {
 	GetLanguages() []string
-	GetHomePage() string
 	GetGenders() []string
 	GetPageNames() []string
 	TextMale() string
@@ -30,6 +29,9 @@ type Text interface {
 	TextSentenceGeneratedSuccessfully() string
 	TextTranslationAddedSuccessfully() string
 	TextDefinitionAddedSuccessfully() string
+	TextTutorialTitle() string
+	TextTutorialDescription() string
+	TextTutorialLink() string
 }
 
 func NewText(language string) Text {

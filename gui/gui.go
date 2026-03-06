@@ -2,6 +2,7 @@ package gui
 
 import (
 	"context"
+	"net/url"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
@@ -10,6 +11,10 @@ import (
 	"github.com/dafraer/sentence-gen-grpc-client/core"
 	"github.com/dafraer/sentence-gen-grpc-client/text"
 	"go.uber.org/zap"
+)
+
+const (
+	projectLink = "https://github.com/dafraer/sentence-gen-grpc-client"
 )
 
 type GUI struct {
@@ -39,19 +44,19 @@ func (gui *GUI) Run() {
 	items := gui.text.GetPageNames()
 
 	//Create pages
-	homePage := gui.createHomePage()
 	generateSentencePage := gui.createGenerateSentencePage()
 	translatePage := gui.createTranslatePage()
 	generateDefinitionPage := gui.createGenerateDefinitionPage()
+	tutorialPage := gui.createTutorialPage()
 	//Create variable for contents of the page
-	content := container.NewStack(homePage) // right side
+	content := container.NewStack(generateSentencePage) // right side
 
 	//Create map of all pages
 	pages := map[string]fyne.CanvasObject{
-		items[0]: homePage,
-		items[1]: generateSentencePage,
-		items[2]: translatePage,
-		items[3]: generateDefinitionPage,
+		items[0]: generateSentencePage,
+		items[1]: translatePage,
+		items[2]: generateDefinitionPage,
+		items[3]: tutorialPage,
 	}
 
 	//Create the actual fyne list
@@ -68,9 +73,12 @@ func (gui *GUI) Run() {
 		content.Refresh()
 	}
 
+	//Wrap list in a container whose min width fits the longest item
+	listWrapper := container.New(&minWidthLayout{width: listMinWidth(items)}, list)
+
 	//Create horizontal split between the list and the contents of the page
-	split := container.NewHSplit(list, content)
-	split.Offset = 0.15
+	split := container.NewHSplit(listWrapper, content)
+	split.Offset = 0
 
 	//Set window content and size
 	gui.window.SetContent(split)
@@ -80,8 +88,17 @@ func (gui *GUI) Run() {
 	gui.window.ShowAndRun()
 }
 
-func (gui *GUI) createHomePage() fyne.CanvasObject {
-	return widget.NewRichTextFromMarkdown(gui.text.GetHomePage())
+func (gui *GUI) createTutorialPage() fyne.CanvasObject {
+	header := widget.NewRichTextFromMarkdown(gui.text.TextTutorialTitle())
+	u, err := url.Parse(projectLink)
+	if err != nil {
+		gui.logger.Errorw("Error parsing url", "error", err)
+	}
+	body := widget.NewRichText(
+		&widget.TextSegment{Text: gui.text.TextTutorialDescription() + " ", Style: widget.RichTextStyle{Inline: true}},
+		&widget.HyperlinkSegment{Text: gui.text.TextTutorialLink(), URL: u},
+	)
+	return container.NewVBox(header, body)
 }
 
 func (gui *GUI) createGenerateSentencePage() fyne.CanvasObject {

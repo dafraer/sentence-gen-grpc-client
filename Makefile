@@ -4,3 +4,5 @@ run:
 	go run cmd/main.go debug
 push:
 	git add . && git commit -m "$(m)" && git push
+build darwin:
+	 fyne package -os darwin -icon ../media/darwin_logo.png -src ./cmd -name sengen

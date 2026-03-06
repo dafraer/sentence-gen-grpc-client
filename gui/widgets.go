@@ -1,9 +1,37 @@
 package gui
 
 import (
+	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/dialog"
+	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 )
+
+// minWidthLayout is a layout that enforces a minimum width on its container.
+type minWidthLayout struct {
+	width float32
+}
+
+func (l *minWidthLayout) Layout(objects []fyne.CanvasObject, size fyne.Size) {
+	for _, o := range objects {
+		o.Move(fyne.NewPos(0, 0))
+		o.Resize(size)
+	}
+}
+
+func (l *minWidthLayout) MinSize(_ []fyne.CanvasObject) fyne.Size {
+	return fyne.NewSize(l.width, 0)
+}
+
+func listMinWidth(items []string) float32 {
+	longest := ""
+	for _, item := range items {
+		if len(item) > len(longest) {
+			longest = item
+		}
+	}
+	return widget.NewLabel(longest).MinSize().Width + theme.Padding()*4
+}
 
 func (gui *GUI) createForm(params *formParams) *widget.Form {
 	form := widget.NewForm(
