@@ -54,7 +54,7 @@ Download the latest build for your platform:
 |----------|--------------------------------------------------------------------------------------------------------------------|
 | macOS    | [Sengen.dmg](https://github.com/dafraer/sentence-gen-grpc-client/raw/refs/heads/main/builds/darwin/Sengen.dmg)     |
 | Windows  | [Sengen.exe](https://github.com/dafraer/sentence-gen-grpc-client/raw/refs/heads/main/builds/windows/Sengen.exe)    |
-| Linux    | [Sengen.tar.gz](https://github.com/dafraer/sentence-gen-grpc-client/raw/refs/heads/main/builds/linux/engen.tar.gz) |
+| Linux    | [Sengen.tar.xz](https://github.com/dafraer/sentence-gen-grpc-client/raw/refs/heads/main/builds/linux/engen.tar.xz) |
 
 **macOS:** After downloading, open `Sengen.dmg` and drag `Sengen.app` to your Applications folder. Eject the dmg afterward. On first launch you may need to right-click -> Open to bypass Gatekeeper.
 
@@ -62,7 +62,7 @@ Download the latest build for your platform:
 
 **Linux:** Extract the archive and run the binary:
 ```sh
-tar -xzf Sengen.tar.gz
+tar -xzf Sengen.tar.xz
 ./sengen
 ```
 

@@ -14,4 +14,4 @@ build-windows:
 	mv ./Sengen.exe ./builds/windows/Sengen.exe
 build-linux:
 	fyne package -os linux -icon ../media/logo.png -src ./cmd -name Sengen  --release
-	mv ./Sengen.tar.gz ./builds/linux/Sengen.tar.gz
+	mv ./Sengen.tar.xz ./builds/linux/Sengen.tar.xz
