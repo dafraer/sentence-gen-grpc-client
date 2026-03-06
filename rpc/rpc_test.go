@@ -8,6 +8,7 @@ import (
 	"go.uber.org/zap"
 )
 
+// newTestClient is a helper function that creates test client
 func newTestClient(t *testing.T) *Client {
 	t.Helper()
 	logger, err := zap.NewDevelopment()
@@ -23,6 +24,7 @@ func newTestClient(t *testing.T) *Client {
 	return client
 }
 
+// TestGenerateSentence tests GenerateSentence function
 func TestGenerateSentence(t *testing.T) {
 	client := newTestClient(t)
 
@@ -37,6 +39,7 @@ func TestGenerateSentence(t *testing.T) {
 	assert.NotEmpty(t, resp.TranslatedSentence)
 }
 
+// TestGenerateSentenceWithAudio tests audio generation
 func TestGenerateSentenceWithAudio(t *testing.T) {
 	client := newTestClient(t)
 
@@ -55,6 +58,7 @@ func TestGenerateSentenceWithAudio(t *testing.T) {
 
 }
 
+// TestGenerateSentenceWithHint tests that sentence generation works as intended with hint
 func TestGenerateSentenceWithHint(t *testing.T) {
 	client := newTestClient(t)
 

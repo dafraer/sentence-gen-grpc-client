@@ -28,18 +28,22 @@ type Client struct {
 	addr   string
 }
 
+// NewClient creates new grpc Client
 func NewClient(addr string, logger *zap.SugaredLogger) (*Client, error) {
 	logger.Infow("creating gRPC client", "addr", addr)
 	opts := []grpc.DialOption{
+		//TODO:Change to secure
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	}
 
+	//Create new grpc client
 	conn, err := grpc.NewClient(addr, opts...)
 	if err != nil {
 		logger.Errorw("failed to create gRPC connection", "addr", addr, "err", err)
 		return nil, err
 	}
 
+	//Create new SentenceGen client
 	client := pb.NewSentenceGenClient(conn)
 
 	logger.Infow("gRPC client created", "addr", addr)
@@ -51,12 +55,16 @@ func NewClient(addr string, logger *zap.SugaredLogger) (*Client, error) {
 	}, nil
 }
 
+// Close closes the connection
 func (c *Client) Close() error {
 	return c.conn.Close()
 }
 
+// GenerateSentence generates sentences and audio for specified word
 func (c *Client) GenerateSentence(ctx context.Context, req *GenerateSentenceRequest) (*GenerateSentenceResponse, error) {
 	c.logger.Debugw("calling GenerateSentence", "word", req.Word, "wordLang", req.WordLanguage, "translationLang", req.TranslationLanguage, "includeAudio", req.IncludeAudio)
+
+	//Call grpc function
 	resp, err := c.client.GenerateSentence(ctx, &pb.GenerateSentenceRequest{
 		Word:                req.Word,
 		WordLanguage:        req.WordLanguage,
@@ -79,6 +87,7 @@ func (c *Client) GenerateSentence(ctx context.Context, req *GenerateSentenceRequ
 	}, nil
 }
 
+// Translate generates translation and audio for specified word
 func (c *Client) Translate(ctx context.Context, req *TranslateRequest) (*TranslateResponse, error) {
 	c.logger.Debugw("calling Translate", "word", req.Word, "fromLang", req.FromLanguage, "toLang", req.ToLanguage, "includeAudio", req.IncludeAudio)
 	resp, err := c.client.Translate(ctx, &pb.TranslateRequest{
@@ -103,6 +112,7 @@ func (c *Client) Translate(ctx context.Context, req *TranslateRequest) (*Transla
 	}, nil
 }
 
+// GenerateDefinition generates definition and audio for specified word
 func (c *Client) GenerateDefinition(ctx context.Context, req *GenerateDefinitionRequest) (*GenerateDefinitionResponse, error) {
 	c.logger.Debugw("calling GenerateDefinition", "word", req.Word, "lang", req.Language, "includeAudio", req.IncludeAudio)
 	resp, err := c.client.GenerateDefinition(ctx, &pb.GenerateDefinitionRequest{
@@ -125,6 +135,7 @@ func (c *Client) GenerateDefinition(ctx context.Context, req *GenerateDefinition
 	}, nil
 }
 
+// handleErr maps gRPC status code to a local error
 func handleErr(err error) error {
 	statusCode := status.Convert(err)
 	switch statusCode.Code() {

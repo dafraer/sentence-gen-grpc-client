@@ -6,6 +6,7 @@ type Language struct {
 	Code        string
 }
 
+// languages has all languages that have Chirp3-HD voice
 var languages = []Language{
 	{DisplayName: "Arabic", Code: "ar-XA"},
 	{DisplayName: "Bengali (India)", Code: "bn-IN"},
@@ -123,7 +124,7 @@ func (t *En) TextGenerate() string {
 }
 
 func (t *En) TextErrHintTooLong() string {
-	return "Hint too long"
+	return "hint too long"
 }
 
 func (t *En) TextErrWordTooLong() string {
