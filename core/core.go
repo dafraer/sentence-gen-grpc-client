@@ -10,7 +10,7 @@ import (
 	"go.uber.org/zap"
 )
 
-const audioFormat = "%s_%d.wav"
+const audioFormat = "%s_%d.wav" //Format for .wav audio
 
 type Core struct {
 	logger     *zap.SugaredLogger
@@ -18,6 +18,7 @@ type Core struct {
 	ankiClient *anki.Client
 }
 
+// New creates new app core
 func New(logger *zap.SugaredLogger, grpcClient *rpc.Client, ankiClient *anki.Client) *Core {
 	return &Core{
 		logger:     logger,
@@ -26,12 +27,16 @@ func New(logger *zap.SugaredLogger, grpcClient *rpc.Client, ankiClient *anki.Cli
 	}
 }
 
+// GetDeckNames get deck names from anki package
 func (c *Core) GetDeckNames(ctx context.Context) ([]string, error) {
 	return c.ankiClient.GetDeckNames(ctx)
 }
 
-func (c *Core) GenerateSentence(ctx context.Context, req *GenerateSentenceRequest) (*GenerateSentenceResponse, error) {
+// GenerateSentence generates sentences and audio to them
+func (c *Core) GenerateSentence(ctx context.Context, req *GenerateSentenceRequest) error {
 	c.logger.Infow("generating sentence", "word", req.Word, "wordLang", req.WordLanguage, "translationLang", req.TranslationLanguage, "deck", req.DeckName, "includeAudio", req.IncludeAudio)
+
+	//Generate sentences
 	resp, err := c.grpcClient.GenerateSentence(ctx, &rpc.GenerateSentenceRequest{
 		Word:                req.Word,
 		WordLanguage:        req.WordLanguage,
@@ -42,19 +47,18 @@ func (c *Core) GenerateSentence(ctx context.Context, req *GenerateSentenceReques
 	})
 	if err != nil {
 		c.logger.Errorw("failed to generate sentence", "word", req.Word, "err", err)
-		return nil, err
+		return err
 	}
 
+	//Build audio file for anki
 	var ankiAudio *anki.Audio
 	if req.IncludeAudio && len(resp.Audio) > 0 {
 		filename := fmt.Sprintf(audioFormat, req.Word, time.Now().Unix())
 		c.logger.Debugw("audio received for sentence", "word", req.Word, "bytes", len(resp.Audio), "filename", filename)
-		//if err := c.appData.SaveAudio(resp.Audio, filename); err != nil {
-		//	c.logger.Errorw("failed to save audio", "err", err)
-		//}
 		ankiAudio = &anki.Audio{Data: resp.Audio, Filename: filename, Fields: []string{"Front"}}
 	}
 
+	//Add anki card
 	if err := c.ankiClient.AddCard(ctx, anki.Note{
 		DeckName: req.DeckName,
 		CardType: anki.BasicAndReverse,
@@ -63,19 +67,17 @@ func (c *Core) GenerateSentence(ctx context.Context, req *GenerateSentenceReques
 		Audio:    ankiAudio,
 	}); err != nil {
 		c.logger.Errorw("failed to add sentence card to Anki", "word", req.Word, "deck", req.DeckName, "err", err)
-		return nil, err
+		return err
 	}
 
 	c.logger.Infow("sentence card added successfully", "word", req.Word, "deck", req.DeckName)
-	return &GenerateSentenceResponse{
-		OriginalSentence:   resp.OriginalSentence,
-		TranslatedSentence: resp.TranslatedSentence,
-		Audio:              resp.Audio,
-	}, nil
+	return nil
 }
 
-func (c *Core) Translate(ctx context.Context, req *TranslateRequest) (*TranslateResponse, error) {
+// Translate generates translation and adds it to anki
+func (c *Core) Translate(ctx context.Context, req *TranslateRequest) error {
 	c.logger.Infow("translating word", "word", req.Word, "wordLang", req.WordLanguage, "translationLang", req.TranslationLang, "deck", req.DeckName, "includeAudio", req.IncludeAudio)
+	//Translate the word
 	resp, err := c.grpcClient.Translate(ctx, &rpc.TranslateRequest{
 		Word:            req.Word,
 		FromLanguage:    req.WordLanguage,
@@ -86,9 +88,10 @@ func (c *Core) Translate(ctx context.Context, req *TranslateRequest) (*Translate
 	})
 	if err != nil {
 		c.logger.Errorw("failed to translate word", "word", req.Word, "err", err)
-		return nil, err
+		return err
 	}
 
+	//Build audio file for anki
 	var ankiAudio *anki.Audio
 	if req.IncludeAudio && len(resp.Audio) > 0 {
 		filename := fmt.Sprintf(audioFormat, req.Word, time.Now().Unix())
@@ -96,6 +99,7 @@ func (c *Core) Translate(ctx context.Context, req *TranslateRequest) (*Translate
 		ankiAudio = &anki.Audio{Data: resp.Audio, Filename: filename, Fields: []string{"Front"}}
 	}
 
+	//Add card to anki
 	if err := c.ankiClient.AddCard(ctx, anki.Note{
 		DeckName: req.DeckName,
 		CardType: anki.BasicAndReverse,
@@ -104,18 +108,17 @@ func (c *Core) Translate(ctx context.Context, req *TranslateRequest) (*Translate
 		Audio:    ankiAudio,
 	}); err != nil {
 		c.logger.Errorw("failed to add translation card to Anki", "word", req.Word, "deck", req.DeckName, "err", err)
-		return nil, err
+		return err
 	}
 
 	c.logger.Infow("translation card added successfully", "word", req.Word, "deck", req.DeckName)
-	return &TranslateResponse{
-		Translation: resp.Translation,
-		Audio:       resp.Audio,
-	}, nil
+	return nil
 }
 
-func (c *Core) GenerateDefinition(ctx context.Context, req *GenerateDefinitionRequest) (*GenerateDefinitionResponse, error) {
+// GenerateDefinition generates definition for a word and adds it to the anki deck
+func (c *Core) GenerateDefinition(ctx context.Context, req *GenerateDefinitionRequest) error {
 	c.logger.Infow("generating definition", "word", req.Word, "lang", req.Language, "deck", req.DeckName, "includeAudio", req.IncludeAudio)
+	//Generate definition
 	resp, err := c.grpcClient.GenerateDefinition(ctx, &rpc.GenerateDefinitionRequest{
 		Word:           req.Word,
 		Language:       req.Language,
@@ -125,9 +128,10 @@ func (c *Core) GenerateDefinition(ctx context.Context, req *GenerateDefinitionRe
 	})
 	if err != nil {
 		c.logger.Errorw("failed to generate definition", "word", req.Word, "err", err)
-		return nil, err
+		return err
 	}
 
+	//Build audio file for anki
 	var ankiAudio *anki.Audio
 	if req.IncludeAudio && len(resp.Audio) > 0 {
 		filename := fmt.Sprintf(audioFormat, req.Word, time.Now().Unix())
@@ -135,6 +139,7 @@ func (c *Core) GenerateDefinition(ctx context.Context, req *GenerateDefinitionRe
 		ankiAudio = &anki.Audio{Data: resp.Audio, Filename: filename, Fields: []string{"Front"}}
 	}
 
+	//Add card to anki
 	if err := c.ankiClient.AddCard(ctx, anki.Note{
 		DeckName: req.DeckName,
 		CardType: anki.Basic,
@@ -143,14 +148,11 @@ func (c *Core) GenerateDefinition(ctx context.Context, req *GenerateDefinitionRe
 		Audio:    ankiAudio,
 	}); err != nil {
 		c.logger.Errorw("failed to add definition card to Anki", "word", req.Word, "deck", req.DeckName, "err", err)
-		return nil, err
+		return err
 	}
 
 	c.logger.Infow("definition card added successfully", "word", req.Word, "deck", req.DeckName)
-	return &GenerateDefinitionResponse{
-		Definition: resp.Definition,
-		Audio:      resp.Audio,
-	}, nil
+	return nil
 }
 
 func toRPCGender(gender string) rpc.Gender {

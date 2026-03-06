@@ -10,12 +10,6 @@ type GenerateSentenceRequest struct {
 	DeckName            string
 }
 
-type GenerateSentenceResponse struct {
-	OriginalSentence   string
-	TranslatedSentence string
-	Audio              []byte
-}
-
 type TranslateRequest struct {
 	Word            string
 	WordLanguage    string
@@ -26,11 +20,6 @@ type TranslateRequest struct {
 	DeckName        string
 }
 
-type TranslateResponse struct {
-	Translation string
-	Audio       []byte
-}
-
 type GenerateDefinitionRequest struct {
 	Word           string
 	Language       string
@@ -38,9 +27,4 @@ type GenerateDefinitionRequest struct {
 	IncludeAudio   bool
 	AudioGender    string
 	DeckName       string
-}
-
-type GenerateDefinitionResponse struct {
-	Definition string
-	Audio      []byte
 }

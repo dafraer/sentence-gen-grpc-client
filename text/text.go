@@ -34,7 +34,6 @@ type Text interface {
 	TextTutorialLink() string
 }
 
-func NewText(language string) Text {
-	//TODO: add other languages
+func NewText() Text {
 	return &En{}
 }

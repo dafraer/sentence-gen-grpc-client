@@ -17,14 +17,17 @@ type Config struct {
 
 // Load loads config and panics if it encounters an error
 func Load(debug bool) (*Config, error) {
+	//Get path for the log file on the user's OS
 	logPath, err := platform.GetLogFilePath()
 	if err != nil {
 		return nil, err
 	}
 
+	//If debug mode is on output logs to stderr
 	if debug {
 		logPath = "stderr"
 	}
+
 	return &Config{
 		LogPath:         logPath,
 		AnkiConnectAddr: ankiConnectAddr,
