@@ -27,7 +27,7 @@
         <li><a href="#setting-up-anki-and-ankiconnect">Setting Up Anki and AnkiConnect</a></li>
       </ul>
     </li>
-    <li><a href="#features">Features</a></li>
+    <li><a href="#Usage">Usage</a></li>
     <li><a href="#contact">Contact</a></li>
   </ol>
 </details>
@@ -91,8 +91,8 @@ AnkiConnect runs a local HTTP server on port **8765** whenever Anki is open. You
 
 
 
-<!-- FEATURES -->
-## Features
+<!-- USAGE -->
+## Usage 
 
 #### 1. Open Anki and Sengen
 
