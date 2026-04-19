@@ -20,24 +20,44 @@ def _wheel_score(filename, py_tag, machine):
     if not filename.endswith(".whl"):
         return -1
     # Pure-Python wheel works everywhere
-    if "none-any" in filename or "py3-none-any" in filename:
+    if "none-any" in filename:
         return 5
     # Must match our Python version
     if py_tag not in filename:
         return -1
-    # Must be macOS
-    if "macosx" not in filename:
-        return -1
-    if machine == "arm64":
-        if "arm64" in filename:
-            return 20
-        if "universal2" in filename:
-            return 15
-    else:  # x86_64
-        if "x86_64" in filename:
-            return 20
-        if "universal2" in filename:
-            return 15
+    if sys.platform == "darwin":
+        if "macosx" not in filename:
+            return -1
+        if machine == "arm64":
+            if "arm64" in filename:
+                return 20
+            if "universal2" in filename:
+                return 15
+        else:  # x86_64
+            if "x86_64" in filename:
+                return 20
+            if "universal2" in filename:
+                return 15
+    elif sys.platform == "linux":
+        if "manylinux" not in filename and "linux" not in filename:
+            return -1
+        if machine in ("aarch64", "arm64"):
+            if "aarch64" in filename:
+                return 20
+        else:  # x86_64
+            if "x86_64" in filename:
+                return 20
+    elif sys.platform == "win32":
+        if "win" not in filename:
+            return -1
+        if machine in ("AMD64", "x86_64"):
+            if "win_amd64" in filename:
+                return 20
+            if "win32" in filename:
+                return 10
+        else:
+            if "win32" in filename:
+                return 20
     return -1
 
 

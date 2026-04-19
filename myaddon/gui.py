@@ -11,8 +11,8 @@ def _notify(title, body):
     """Send an OS-level notification, falling back to Anki tooltip."""
     try:
         if sys.platform == "darwin":
-            safe_title = title.replace('"', '\\"')
-            safe_body = body.replace('"', '\\"')
+            safe_title = title.replace('\\', '\\\\').replace('"', '\\"')
+            safe_body = body.replace('\\', '\\\\').replace('"', '\\"')
             subprocess.Popen(
                 ["osascript", "-e",
                  'display notification "{}" with title "{}"'.format(safe_body, safe_title)],
@@ -275,7 +275,7 @@ class SengenDialog(QDialog):
                     mw.taskman.run_on_main(main_ok)
 
                 except Exception as e:
-                    err_msg = _map_error_msg(e, captured_word)
+                    err_msg = _map_error_msg(e)
 
                     def main_err():
                         _notify("Error adding word '{}'".format(captured_word), err_msg)
@@ -392,7 +392,7 @@ class SengenDialog(QDialog):
                     mw.taskman.run_on_main(main_ok)
 
                 except Exception as e:
-                    err_msg = _map_error_msg(e, captured_word)
+                    err_msg = _map_error_msg(e)
 
                     def main_err():
                         _notify("Error adding word '{}'".format(captured_word), err_msg)
@@ -505,19 +505,17 @@ def _combo_value(combo):
     return text  # "" if blank placeholder selected
 
 
-def _map_error_msg(e, word):
+def _map_error_msg(e):
     if isinstance(e, InvalidArgumentError):
-        err_text = "Invalid argument"
-    elif isinstance(e, DeadlineExceededError):
-        err_text = "Server deadline exceeded"
-    elif isinstance(e, InternalServerError):
-        err_text = "Internal server error"
-    elif isinstance(e, ResourceExhaustedError):
-        err_text = "Quota limit reached, try again tomorrow"
-    elif isinstance(e, UnavailableError):
-        err_text = "Server is unavailable"
-    elif isinstance(e, GrpcError):
-        err_text = "Unknown error"
-    else:
-        err_text = str(e)
-    return f"Error adding word '{word}': {err_text}"
+        return "Invalid argument"
+    if isinstance(e, DeadlineExceededError):
+        return "Server deadline exceeded"
+    if isinstance(e, InternalServerError):
+        return "Internal server error"
+    if isinstance(e, ResourceExhaustedError):
+        return "Quota limit reached, try again tomorrow"
+    if isinstance(e, UnavailableError):
+        return "Server is unavailable"
+    if isinstance(e, GrpcError):
+        return "Unknown error"
+    return str(e)

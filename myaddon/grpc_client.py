@@ -84,14 +84,15 @@ class GrpcClient:
 
     def _map_error(self, e):
         code = e.code()
+        msg = e.details() or ""
         if code == grpc.StatusCode.INVALID_ARGUMENT:
-            return InvalidArgumentError()
+            return InvalidArgumentError(msg)
         if code == grpc.StatusCode.DEADLINE_EXCEEDED:
-            return DeadlineExceededError()
+            return DeadlineExceededError(msg)
         if code == grpc.StatusCode.RESOURCE_EXHAUSTED:
-            return ResourceExhaustedError()
+            return ResourceExhaustedError(msg)
         if code == grpc.StatusCode.INTERNAL:
-            return InternalServerError()
+            return InternalServerError(msg)
         if code == grpc.StatusCode.UNAVAILABLE:
-            return UnavailableError()
-        return UnknownError()
+            return UnavailableError(msg)
+        return UnknownError(msg)

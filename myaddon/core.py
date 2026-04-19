@@ -1,12 +1,10 @@
 import os
 import re
-import time
 import tempfile
 
 from .proto import sentence_gen_pb2
 
 _MALE = "Male"
-_AUDIO_FORMAT = "{}_{}.wav"
 
 
 def _to_grpc_gender(gender):
@@ -120,7 +118,6 @@ class Core:
 
 def _save_audio(word, data):
     from aqt import mw
-    filename = _AUDIO_FORMAT.format(_safe_filename(word), int(time.time()))
     with tempfile.NamedTemporaryFile(suffix=".wav", delete=False, prefix="sengen_") as f:
         f.write(data)
         temp_path = f.name
