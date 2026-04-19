@@ -15,3 +15,6 @@ build-windows:
 build-linux:
 	fyne package -os linux -icon ../media/logo.png -src ./cmd -name Sengen  --release
 	mv ./Sengen.tar.xz ./builds/linux/Sengen.tar.xz
+
+build-ankiweb:
+	cd myaddon && zip -r ../myaddon.ankiaddon *

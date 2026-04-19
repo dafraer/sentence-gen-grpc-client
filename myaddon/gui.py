@@ -1,8 +1,49 @@
+import subprocess
+import sys
 import threading
 
 from aqt.qt import *
 from aqt import mw
 from aqt.utils import showWarning, tooltip
+
+
+def _notify(title, body):
+    """Send an OS-level notification, falling back to Anki tooltip."""
+    try:
+        if sys.platform == "darwin":
+            safe_title = title.replace('"', '\\"')
+            safe_body = body.replace('"', '\\"')
+            subprocess.Popen(
+                ["osascript", "-e",
+                 'display notification "{}" with title "{}"'.format(safe_body, safe_title)],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+        elif sys.platform == "win32":
+            # PowerShell toast notification
+            ps = (
+                "[Windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notifications, "
+                "ContentType = WindowsRuntime] | Out-Null; "
+                "$t = [Windows.UI.Notifications.ToastTemplateType]::ToastText02; "
+                "$xml = [Windows.UI.Notifications.ToastNotificationManager]::GetTemplateContent($t); "
+                "$xml.GetElementsByTagName('text')[0].AppendChild($xml.CreateTextNode('{}')) | Out-Null; "
+                "$xml.GetElementsByTagName('text')[1].AppendChild($xml.CreateTextNode('{}')) | Out-Null; "
+                "$toast = [Windows.UI.Notifications.ToastNotification]::new($xml); "
+                "[Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier('Sengen').Show($toast);"
+            ).format(title.replace("'", ""), body.replace("'", ""))
+            subprocess.Popen(
+                ["powershell", "-WindowStyle", "Hidden", "-Command", ps],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+        else:
+            subprocess.Popen(
+                ["notify-send", title, body],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+    except Exception:
+        tooltip("{}: {}".format(title, body))
 
 # PyQt5 / PyQt6 enum compatibility
 try:
@@ -225,9 +266,9 @@ class SengenDialog(QDialog):
                     def main_ok():
                         try:
                             on_anki(captured_word, deck, result)
-                            tooltip(success_msg(captured_word))
+                            _notify("Success", success_msg(captured_word))
                         except Exception as e:
-                            showWarning(f"Error adding word '{captured_word}': {e}")
+                            _notify("Error adding word '{}'".format(captured_word), str(e))
                         finally:
                             validate()
 
@@ -237,7 +278,7 @@ class SengenDialog(QDialog):
                     err_msg = _map_error_msg(e, captured_word)
 
                     def main_err():
-                        showWarning(err_msg)
+                        _notify("Error adding word '{}'".format(captured_word), err_msg)
                         validate()
 
                     mw.taskman.run_on_main(main_err)
@@ -342,9 +383,9 @@ class SengenDialog(QDialog):
                     def main_ok():
                         try:
                             self._core.anki_add_definition_card(captured_word, deck, result)
-                            tooltip(f"Definition of the word '{captured_word}' has been added successfully")
+                            _notify("Success", "Definition of the word '{}' has been added successfully".format(captured_word))
                         except Exception as e:
-                            showWarning(f"Error adding word '{captured_word}': {e}")
+                            _notify("Error adding word '{}'".format(captured_word), str(e))
                         finally:
                             validate()
 
@@ -354,7 +395,7 @@ class SengenDialog(QDialog):
                     err_msg = _map_error_msg(e, captured_word)
 
                     def main_err():
-                        showWarning(err_msg)
+                        _notify("Error adding word '{}'".format(captured_word), err_msg)
                         validate()
 
                     mw.taskman.run_on_main(main_err)
