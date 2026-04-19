@@ -188,6 +188,19 @@ func (gui *GUI) createTemplateTranslationPage(title string, onSubmit func(params
 	translationHint.OnChanged = validateForm
 	deckSelect.OnChanged = validateForm
 
+	wordEntry.OnSubmitted = func(_ string) {
+		gui.logger.Infow("wordEntry OnSubmitted fired", "formDisabled", form.Disabled())
+		if !form.Disabled() {
+			form.OnSubmit()
+		}
+	}
+	translationHint.OnSubmitted = func(_ string) {
+		gui.logger.Infow("translationHint OnSubmitted fired", "formDisabled", form.Disabled())
+		if !form.Disabled() {
+			form.OnSubmit()
+		}
+	}
+
 	return container.NewVBox(header, form)
 }
 
@@ -249,6 +262,17 @@ func (gui *GUI) createGenerateDefinitionPage() fyne.CanvasObject {
 	wordEntry.OnChanged = validateForm
 	definitionHint.OnChanged = validateForm
 	deckSelect.OnChanged = validateForm
+
+	wordEntry.OnSubmitted = func(_ string) {
+		if !form.Disabled() {
+			form.OnSubmit()
+		}
+	}
+	definitionHint.OnSubmitted = func(_ string) {
+		if !form.Disabled() {
+			form.OnSubmit()
+		}
+	}
 
 	return container.NewVBox(title, form)
 }
